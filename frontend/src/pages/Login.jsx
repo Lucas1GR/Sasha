@@ -19,7 +19,7 @@ const Login = () => {
       // Petición al backend
       const res = await api.post("/login", { email, password });
 
-      login(res.data.user, res.data.token);
+      login(res.data.usuario, res.data.token);
 
       await Swal.fire({
         title: "¡Bienvenida!",
@@ -30,7 +30,7 @@ const Login = () => {
       });
 
       // Redirigir según el rol
-      const userRole = res.data.user.rol;
+      const userRole = res.data.usuario.rol;
       if (userRole === "admin" || userRole === "adminPrincipal") {
         navigate("/admin");
       } else {
@@ -51,7 +51,7 @@ const Login = () => {
       const res = await api.post("/auth/google", {
         token: credentialResponse.credential,
       });
-      login(res.data.user, res.data.token);
+      login(res.data.usuario, res.data.token);
       navigate("/admin");
     } catch (err) {
       console.error("Error Google Login:", err);
