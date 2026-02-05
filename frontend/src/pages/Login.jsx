@@ -4,15 +4,12 @@ import { GoogleLogin } from "@react-oauth/google";
 import api from "../api/axios";
 import Swal from "sweetalert2";
 import "./Login.css";
-// ESTA ES LA LÍNEA QUE FALTABA (Ajusta la ruta si es necesario)
 import { useAuth } from "../context/AuthContext";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [mostrarPassword, setMostrarPassword] = useState(false);
-
-  // Ahora la línea 13 NO dará error porque useAuth ya está importado arriba
   const { login } = useAuth();
   const navigate = useNavigate();
 
@@ -22,7 +19,6 @@ const Login = () => {
       // Petición al backend
       const res = await api.post("/login", { email, password });
 
-      // IMPORTANTE: Guardamos en el contexto para que el Nav se actualice
       login(res.data.user, res.data.token);
 
       await Swal.fire({
@@ -127,7 +123,7 @@ const Login = () => {
         </div>
 
         <p className="footer-text">
-          ¿Aún no te cuidas con nosotros?{" "}
+          ¿Aún no te atendes con nosotros?{" "}
           <Link to="/registro">Regístrate aquí</Link>
         </p>
       </div>

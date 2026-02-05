@@ -64,10 +64,9 @@ router.post("/google", async (req, res) => {
         email,
         password: hashedPassword,
         rol: "usuario",
-        fotoPerfil: picture, // Aprovechamos la foto de Google
+        fotoPerfil: picture, 
       });
       await usuario.save();
-      // ✅ YA NO CREAMOS "DUENO", la info vive en Usuario
     }
 
     const nuestroToken = jwt.sign(
