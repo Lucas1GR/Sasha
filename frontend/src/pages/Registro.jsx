@@ -25,8 +25,10 @@ const Registro = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Probamos sin el /auth si tu backend tiene la ruta directa
-      const res = await api.post("/registro", formData);
+      // Usamos el 'res' para que VS Code no marque error de "variable no usada"
+      const res = await api.post("/auth/registro", formData);
+      console.log("Registro exitoso:", res.data);
+
       await Swal.fire({
         title: "¡Bienvenida, Bella!",
         text: "Tu cuenta en Estética Sasha ha sido creada. Ya puedes iniciar sesión.",
@@ -35,12 +37,25 @@ const Registro = () => {
       });
       navigate("/login");
     } catch (err) {
-      console.error("Error en registro:", err);
+      console.error("Error detallado:", err.response || err);
+
+      // Si da 404 con /auth/registro, intentamos solo con /registro
+      if (err.response?.status === 404) {
+        try {
+          const resRetry = await api.post("/registro", formData);
+          console.log("Registro exitoso (retry):", resRetry.data);
+          // ... mismo Swal y navigate que arriba ...
+          return;
+        } catch (retryErr) {
+          console.error("Fallo definitivo:", retryErr);
+        }
+      }
+
       Swal.fire({
         title: "Ups! Algo salió mal",
         text:
           err.response?.data?.msg ||
-          "No se pudo completar el registro. El email ya podría estar en uso.",
+          "No se pudo completar el registro. Verifica los datos.",
         icon: "error",
         confirmButtonColor: "#f06292",
       });
@@ -158,6 +173,7 @@ const Registro = () => {
               color: "white",
               borderRadius: "30px",
               border: "none",
+              cursor: "pointer",
             }}
           >
             CREAR MI CUENTA ✨

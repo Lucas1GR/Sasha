@@ -15,7 +15,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await api.post("/auth/login", { email, password });
+      const res = await api.post("/login", { email, password });
 
       // Guardamos el token y los datos del usuario
       localStorage.setItem("token", res.data.token);
@@ -76,13 +76,13 @@ const Login = () => {
               required
             />
           </div>
-
           <div className="input-group">
             <input
               type={mostrarPassword ? "text" : "password"}
               placeholder="Tu Contraseña"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              autoComplete="current-password" // <-- Agregado
               required
             />
             <span
@@ -93,7 +93,6 @@ const Login = () => {
               {mostrarPassword ? "🙈" : "👁️"}
             </span>
           </div>
-
           <button type="submit" className="btn-login-submit">
             INGRESAR
           </button>
@@ -116,7 +115,7 @@ const Login = () => {
         </div>
 
         <p className="footer-text">
-          ¿Aún no te cuidas con nosotros?{" "}
+          ¿Aún no te atendes con nosotros?{" "}
           <Link to="/registro">Regístrate aquí</Link>
         </p>
       </div>

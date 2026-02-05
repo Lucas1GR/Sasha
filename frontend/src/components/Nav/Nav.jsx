@@ -44,7 +44,7 @@ const Nav = () => {
       <div className="nav-right">
         {/* Link a Galería siempre visible */}
         <Link to="/galeria" className="nav-link-galeria">
-          ✨ GALERÍA
+          📷 GALERÍA
         </Link>
 
         {!usuario ? (
