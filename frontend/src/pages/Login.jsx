@@ -1,7 +1,58 @@
-// ... (mismos imports arriba)
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { GoogleLogin } from "@react-oauth/google";
+import api from "../api/axios";
+import Swal from "sweetalert2";
+import "./Login.css";
 
 const Login = () => {
-  // ... (mismos estados y funciones handleSubmit/handleGoogleSuccess)
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [mostrarPassword, setMostrarPassword] = useState(false);
+  const navigate = useNavigate();
+
+  // ESTA es la función que te faltaba definir
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await api.post("/auth/login", { email, password });
+
+      // Guardamos el token y los datos del usuario
+      localStorage.setItem("token", res.data.token);
+      localStorage.setItem("user", JSON.stringify(res.data.user));
+
+      Swal.fire({
+        title: "¡Bienvenida!",
+        text: "Inicio de sesión exitoso",
+        icon: "success",
+        timer: 2000,
+        showConfirmButton: false,
+      });
+
+      // Redirigir al panel o al inicio
+      navigate("/admin");
+    } catch (err) {
+      console.error("Error en login:", err);
+      Swal.fire({
+        title: "Error",
+        text: err.response?.data?.msg || "Credenciales incorrectas",
+        icon: "error",
+      });
+    }
+  };
+
+  const handleGoogleSuccess = async (credentialResponse) => {
+    try {
+      const res = await api.post("/auth/google", {
+        token: credentialResponse.credential,
+      });
+      localStorage.setItem("token", res.data.token);
+      navigate("/admin");
+    } catch (err) {
+      console.error("Error Google Login:", err);
+      Swal.fire("Error", "No se pudo iniciar sesión con Google", "error");
+    }
+  };
 
   return (
     <div className="login-page">
@@ -10,14 +61,12 @@ const Login = () => {
 
       <div className="login-card">
         <div className="login-header">
-          {/* Reemplazamos el emoji por tu logo */}
           <img src="/SB-logo.png" alt="Logo Sasha" className="login-logo-img" />
           <h2>Bienvenida</h2>
           <p>Ingresa a tu cuenta de Estética Sasha</p>
         </div>
 
         <form onSubmit={handleSubmit}>
-          {/* ... resto del formulario igual ... */}
           <div className="input-group">
             <input
               type="email"
@@ -38,6 +87,7 @@ const Login = () => {
             />
             <span
               className="toggle-password"
+              style={{ cursor: "pointer" }}
               onClick={() => setMostrarPassword(!mostrarPassword)}
             >
               {mostrarPassword ? "🙈" : "👁️"}

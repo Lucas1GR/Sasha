@@ -27,7 +27,6 @@ const Nav = () => {
     <nav className={`nav-container ${shrink ? "nav-shrink" : ""}`}>
       <div className="nav-left">
         <Link to="/" className="nav-logo">
-          // Buscá esta parte y corregí el src
           <img
             src="/SB-logo.png"
             alt="Estética Sasha"

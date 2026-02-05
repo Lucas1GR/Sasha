@@ -52,7 +52,14 @@ const HomeAdmin = () => {
           <h3>Agenda</h3>
           <p>Control de turnos diarios</p>
         </div>
-
+        <div
+          className="admin-card-btn"
+          onClick={() => navigate("/admin/servicios")}
+        >
+          <div className="icon-wrap">💅</div>
+          <h3>Servicios</h3>
+          <p>Precios y tratamientos</p>
+        </div>
         <div
           className="admin-card-btn"
           onClick={() => navigate("/admin/galeria")}

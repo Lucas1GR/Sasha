@@ -9,7 +9,7 @@ const Galeria = () => {
   // Tus fotos locales como respaldo
   const fotosLocales = [
     { _id: "1", url: "/lobby.jpg", titulo: "Nuestra Recepción" },
-    { _id: "2", url: "/uñas.jpg", titulo: "Manicuría Premium" },
+    { _id: "2", url: "/unas.jpg", titulo: "Manicuría Premium" },
     { _id: "3", url: "/depilacion.jpg", titulo: "Depilación Láser" },
     { _id: "4", url: "/masajes.jpg", titulo: "Sala de Relax" },
   ];

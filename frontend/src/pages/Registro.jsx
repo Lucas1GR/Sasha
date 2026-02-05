@@ -13,8 +13,9 @@ const Registro = () => {
     telefono: "",
     email: "",
     password: "",
-    rol: "usuario", // Forzamos el rol para que no sea admin por error
+    rol: "usuario",
   });
+
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -24,27 +25,23 @@ const Registro = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Enviamos el formData que ya incluye el rol: "usuario"
-      await api.post("/registro", formData);
-
+      // Probamos sin el /auth si tu backend tiene la ruta directa
+      const res = await api.post("/registro", formData);
       await Swal.fire({
         title: "¡Bienvenida, Bella!",
         text: "Tu cuenta en Estética Sasha ha sido creada. Ya puedes iniciar sesión.",
         icon: "success",
-        background: "#ffffff",
-        color: "#ad1457",
         confirmButtonColor: "#ad1457",
       });
       navigate("/login");
     } catch (err) {
+      console.error("Error en registro:", err);
       Swal.fire({
         title: "Ups! Algo salió mal",
         text:
-          err.response?.data?.message ||
-          "No se pudo completar el registro. Revisa los datos.",
+          err.response?.data?.msg ||
+          "No se pudo completar el registro. El email ya podría estar en uso.",
         icon: "error",
-        background: "#ffffff",
-        color: "#ad1457",
         confirmButtonColor: "#f06292",
       });
     }
@@ -57,7 +54,7 @@ const Registro = () => {
 
       <div className="login-card" style={{ maxWidth: "600px" }}>
         <div className="login-header">
-          <span className="login-icon">✨</span>
+          <span style={{ fontSize: "2rem" }}>✨</span>
           <h2>Unite a Sasha</h2>
           <p>Tu espacio de belleza y cuidado personal te espera.</p>
         </div>
@@ -65,11 +62,11 @@ const Registro = () => {
         <form onSubmit={handleSubmit}>
           <div className="row">
             <div className="col-md-6 mb-3 text-start">
-              <label className="form-label label-sasha">Nombre/s</label>
+              <label className="form-label">Nombre/s</label>
               <input
                 type="text"
                 name="nombres"
-                className="form-control input-sasha" // Agregué form-control para Bootstrap
+                className="form-control"
                 value={formData.nombres}
                 onChange={handleChange}
                 placeholder="Ej: María"
@@ -77,11 +74,11 @@ const Registro = () => {
               />
             </div>
             <div className="col-md-6 mb-3 text-start">
-              <label className="form-label label-sasha">Apellido/s</label>
+              <label className="form-label">Apellido/s</label>
               <input
                 type="text"
                 name="apellidos"
-                className="form-control input-sasha"
+                className="form-control"
                 value={formData.apellidos}
                 onChange={handleChange}
                 placeholder="Ej: García"
@@ -92,21 +89,21 @@ const Registro = () => {
 
           <div className="row">
             <div className="col-md-6 mb-3 text-start">
-              <label className="form-label label-sasha">DNI (Opcional)</label>
+              <label className="form-label">DNI (Opcional)</label>
               <input
                 type="text"
                 name="dni"
-                className="form-control input-sasha"
+                className="form-control"
                 value={formData.dni}
                 onChange={handleChange}
               />
             </div>
             <div className="col-md-6 mb-3 text-start">
-              <label className="form-label label-sasha">Teléfono</label>
+              <label className="form-label">Teléfono</label>
               <input
                 type="text"
                 name="telefono"
-                className="form-control input-sasha"
+                className="form-control"
                 value={formData.telefono}
                 onChange={handleChange}
                 placeholder="11 1234 5678"
@@ -116,11 +113,11 @@ const Registro = () => {
           </div>
 
           <div className="mb-3 text-start">
-            <label className="form-label label-sasha">Dirección</label>
+            <label className="form-label">Dirección</label>
             <input
               type="text"
               name="direccion"
-              className="form-control input-sasha"
+              className="form-control"
               value={formData.direccion}
               onChange={handleChange}
               placeholder="Calle y número"
@@ -129,11 +126,11 @@ const Registro = () => {
           </div>
 
           <div className="mb-3 text-start">
-            <label className="form-label label-sasha">Email</label>
+            <label className="form-label">Email</label>
             <input
               type="email"
               name="email"
-              className="form-control input-sasha"
+              className="form-control"
               value={formData.email}
               onChange={handleChange}
               placeholder="hola@ejemplo.com"
@@ -142,25 +139,34 @@ const Registro = () => {
           </div>
 
           <div className="mb-4 text-start">
-            <label className="form-label label-sasha">Contraseña</label>
+            <label className="form-label">Contraseña</label>
             <input
               type="password"
               name="password"
-              className="form-control input-sasha"
+              className="form-control"
               value={formData.password}
               onChange={handleChange}
               required
             />
           </div>
 
-          <button type="submit" className="btn-login-sasha w-100 py-3">
+          <button
+            type="submit"
+            className="btn-login-submit w-100 py-3"
+            style={{
+              backgroundColor: "#ad1457",
+              color: "white",
+              borderRadius: "30px",
+              border: "none",
+            }}
+          >
             CREAR MI CUENTA ✨
           </button>
         </form>
 
         <p className="footer-text mt-4">
           ¿Ya eres parte de la comunidad?{" "}
-          <Link to="/login" className="text-pink-sasha">
+          <Link to="/login" style={{ color: "#ad1457", fontWeight: "bold" }}>
             Inicia sesión aquí
           </Link>
         </p>

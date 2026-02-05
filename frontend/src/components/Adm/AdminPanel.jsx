@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { getProducts, deleteProduct } from "../services/products";
+// 1. Corregimos la ruta: subimos dos niveles (../../) para encontrar services
+import { getProducts, deleteProduct } from "../../services/products";
 import FormularioProducto from "./FormularioProducto";
 import Swal from "sweetalert2";
 import "./AdminPanel.css";
@@ -17,8 +18,9 @@ const AdminPanel = () => {
     try {
       const data = await getProducts();
       setServicios(data);
-    } catch (error) {
-      console.error("Error al cargar servicios");
+    } catch (err) {
+      // 2. Cambiamos error por err para evitar conflictos
+      console.error("Error al cargar servicios:", err);
     }
   };
 
@@ -39,7 +41,9 @@ const AdminPanel = () => {
         await deleteProduct(id);
         Swal.fire("Eliminado", "El servicio ha sido quitado.", "success");
         cargarServicios();
-      } catch (error) {
+      } catch (err) {
+        // 3. Cambiamos error por err aquí también
+        console.error("Error al eliminar:", err);
         Swal.fire("Error", "No se pudo eliminar el servicio.", "error");
       }
     }
@@ -89,32 +93,45 @@ const AdminPanel = () => {
             </tr>
           </thead>
           <tbody>
-            {servicios.map((s) => (
-              <tr key={s._id}>
-                <td>
-                  <img src={s.image} alt={s.name} className="img-miniatura" />
-                </td>
-                <td>{s.name}</td>
-                <td>${s.price}</td>
-                <td>
-                  <button
-                    className="btn-edit"
-                    onClick={() => {
-                      setServicioAEditar(s);
-                      setMostrarForm(true);
-                    }}
-                  >
-                    Editar
-                  </button>
-                  <button
-                    className="btn-delete"
-                    onClick={() => handleEliminar(s._id)}
-                  >
-                    Eliminar
-                  </button>
+            {servicios.length === 0 ? (
+              <tr>
+                <td colSpan="4" style={{ textAlign: "center" }}>
+                  No hay servicios cargados
                 </td>
               </tr>
-            ))}
+            ) : (
+              servicios.map((s) => (
+                <tr key={s._id}>
+                  <td>
+                    <img
+                      src={s.image}
+                      alt={s.name}
+                      className="img-miniatura"
+                      style={{ width: "50px" }}
+                    />
+                  </td>
+                  <td>{s.name}</td>
+                  <td>${s.price}</td>
+                  <td>
+                    <button
+                      className="btn-edit"
+                      onClick={() => {
+                        setServicioAEditar(s);
+                        setMostrarForm(true);
+                      }}
+                    >
+                      Editar
+                    </button>
+                    <button
+                      className="btn-delete"
+                      onClick={() => handleEliminar(s._id)}
+                    >
+                      Eliminar
+                    </button>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>

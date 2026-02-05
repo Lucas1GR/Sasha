@@ -4,7 +4,8 @@ import api from "../api/axios";
 import Swal from "sweetalert2";
 import "./GestionClientes.css";
 
-const DuenosList = () => {
+// Cambiamos el nombre aquí para que coincida con el export final
+const GestionClientes = () => {
   const [duenos, setDuenos] = useState([]);
   const [busqueda, setBusqueda] = useState("");
 
@@ -26,8 +27,9 @@ const DuenosList = () => {
       const res = await api.get("/duenos");
       const data = Array.isArray(res.data) ? res.data : [];
       setDuenos(data);
-    } catch (error) {
-      console.error("Error:", error);
+    } catch (err) {
+      // Cambiado a err
+      console.error("Error al cargar:", err);
       Swal.fire({
         title: "Error",
         text: "No se pudieron cargar los datos",
@@ -75,7 +77,9 @@ const DuenosList = () => {
         direccion: "",
       });
       cargarDuenos();
-    } catch (error) {
+    } catch (err) {
+      // Cambiado a err
+      console.error("Error al agregar:", err);
       Swal.fire({
         title: "Error",
         icon: "error",
@@ -96,7 +100,9 @@ const DuenosList = () => {
       });
       setShowEditarDueno(false);
       cargarDuenos();
-    } catch (error) {
+    } catch (err) {
+      // Cambiado a err
+      console.error("Error al editar:", err);
       Swal.fire({
         title: "Error",
         icon: "error",
@@ -128,7 +134,9 @@ const DuenosList = () => {
           background: "#1e1e1e",
           color: "#fff",
         });
-      } catch (error) {
+      } catch (err) {
+        // Cambiado a err
+        console.error("Error al eliminar:", err);
         Swal.fire({
           title: "Error",
           icon: "error",
@@ -141,7 +149,7 @@ const DuenosList = () => {
 
   return (
     <div className="admin-container">
-      <h2 className="admin-title">GESTIÓN DE DUEÑOS</h2>
+      <h2 className="admin-title">GESTIÓN DE CLIENTES</h2>
 
       <div className="d-flex justify-content-between mb-4 gap-3">
         <InputGroup className="rock-input-group" style={{ maxWidth: "500px" }}>
@@ -161,7 +169,7 @@ const DuenosList = () => {
           />
         </InputGroup>
         <Button className="btn-neon" onClick={() => setShowAgregarDueno(true)}>
-          + Nuevo Dueño
+          + Nuevo Cliente
         </Button>
       </div>
 
@@ -184,7 +192,6 @@ const DuenosList = () => {
                   <div className="fw-bold text-white">
                     {d.nombres} {d.apellidos}
                   </div>
-                  {/* Badge para diferenciar usuarios online vs manuales */}
                   {d.usuarioId ? (
                     <span className="badge-user">Usuario Online</span>
                   ) : (
@@ -201,7 +208,7 @@ const DuenosList = () => {
                   {d.mascotas?.length > 0 ? (
                     d.mascotas.map((m) => m.nombre).join(", ")
                   ) : (
-                    <span className="text-muted small">Sin mascotas</span>
+                    <span className="text-muted small">Sin servicios</span>
                   )}
                 </td>
                 <td>

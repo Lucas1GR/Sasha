@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import api from "../api/axios";
 import { useAuth } from "../context/AuthContext";
-import Modal from "../components/Modal"; // Ajusta la ruta según tu carpeta
+import Modal from "./Modal"; // Borramos el "../components/" porque está en la misma carpeta
 import Swal from "sweetalert2";
 
 const Turnos = () => {
@@ -61,6 +61,7 @@ const Turnos = () => {
       setIsModalOpen(false);
       fetchTurnos();
     } catch (err) {
+      console.error(err); // Esto quita el subrayado rojo
       Swal.fire("Error", "No se pudo agendar el turno", "error");
     }
   };
@@ -74,7 +75,7 @@ const Turnos = () => {
             Gestiona tus citas y reserva nuevos momentos para vos
           </p>
         </div>
-        <button className="btn-save-sasha" onClick={() => setIsOpen(true)}>
+        <button className="btn-save-sasha" onClick={() => setIsModalOpen(true)}>
           ✨ Nueva Reserva
         </button>
       </div>
