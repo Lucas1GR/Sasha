@@ -36,7 +36,11 @@ router.post("/", async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(500).json({ mensaje: "Error interno" });
+    console.error("🔥 LOGIN ERROR REAL:", error);
+    res.status(500).json({
+      mensaje: "Error interno",
+      error: error.message,
+    });
   }
 });
 
@@ -64,7 +68,7 @@ router.post("/google", async (req, res) => {
         email,
         password: hashedPassword,
         rol: "usuario",
-        fotoPerfil: picture, 
+        fotoPerfil: picture,
       });
       await usuario.save();
     }
@@ -91,7 +95,5 @@ router.post("/google", async (req, res) => {
     res.status(400).json({ mensaje: "Error al autenticar con Google" });
   }
 });
-
-module.exports = router;
 
 module.exports = router;

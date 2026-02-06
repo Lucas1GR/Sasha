@@ -91,7 +91,9 @@ router.post("/", autenticarToken, async (req, res) => {
         return res.status(400).json({ mensaje: "Selecciona un tratamiento" });
     }
 
-    const fechaObj = new Date(fecha);
+    const [dd, mm, yyyy] = fecha.split("-");
+    const fechaObj = new Date(Date.UTC(yyyy, mm - 1, dd));
+
     const fechaGuardar = new Date(
       Date.UTC(
         fechaObj.getUTCFullYear(),
@@ -134,7 +136,8 @@ router.get("/mis-turnos", autenticarToken, async (req, res) => {
       .sort({ fecha: -1 });
     res.json(turnos);
   } catch (error) {
-    res.status(500).json({ mensaje: "Error" });
+    console.error("ERROR CREANDO TURNO:", error);
+    res.status(500).json({ mensaje: "Error al reservar" });
   }
 });
 
