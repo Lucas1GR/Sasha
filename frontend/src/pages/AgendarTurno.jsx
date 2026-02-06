@@ -16,7 +16,7 @@ const AgendarTurno = () => {
   const [horasDisponibles, setHorasDisponibles] = useState([]);
   const [cargandoHoras, setCargandoHoras] = useState(false);
 
-  // Feriados 2026 (Actualizados)
+  // Feriados 2026
   const feriadosBackend = [
     "01-01-2026",
     "16-02-2026",
@@ -39,10 +39,11 @@ const AgendarTurno = () => {
     return `${yyyy}-${mm}-${dd}`;
   });
 
+  // 🔥 TRAER SERVICIOS
   useEffect(() => {
     const fetchServicios = async () => {
       try {
-        const res = await api.get("/servicios");
+        const res = await api.get("/products"); // 👈 endpoint real del backend
         setServicios(res.data);
       } catch (error) {
         console.error("Error al cargar servicios", error);
@@ -51,6 +52,7 @@ const AgendarTurno = () => {
     fetchServicios();
   }, []);
 
+  // VALIDACIÓN DE FECHA
   const handleFechaChange = (e) => {
     const fechaInput = e.target.value;
     if (!fechaInput) {
@@ -65,10 +67,8 @@ const AgendarTurno = () => {
     if (esDomingo) {
       Swal.fire({
         title: "Día de Descanso",
-        text: "Los domingos el salón permanece cerrado. ¡Te esperamos el lunes!",
+        text: "Los domingos el salón permanece cerrado.",
         icon: "info",
-        background: "#ffffff",
-        color: "#ad1457",
         confirmButtonColor: "#ad1457",
       });
       setFecha("");
@@ -80,8 +80,6 @@ const AgendarTurno = () => {
         title: "Día Festivo",
         text: "Estética Sasha permanece cerrado por feriado.",
         icon: "warning",
-        background: "#ffffff",
-        color: "#ad1457",
         confirmButtonColor: "#ad1457",
       });
       setFecha("");
@@ -92,34 +90,40 @@ const AgendarTurno = () => {
     setHora("");
   };
 
+  // 🔥 CONSULTAR HORAS DISPONIBLES
   useEffect(() => {
     const consultarHoras = async () => {
       if (!fecha) {
         setHorasDisponibles([]);
         return;
       }
+
       setCargandoHoras(true);
+
       try {
         const [yyyy, mm, dd] = fecha.split("-");
         const res = await api.get(
           `/turnos/disponibles?fecha=${dd}-${mm}-${yyyy}`,
         );
         setHorasDisponibles(res.data);
-      } catch (error) {
+      } catch {
         setHorasDisponibles([]);
       } finally {
         setCargandoHoras(false);
       }
     };
+
     consultarHoras();
   }, [fecha]);
 
+  // 🔥 RESERVAR TURNO
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (!servicioSeleccionado || !fecha || !hora) {
       return Swal.fire({
         title: "Atención",
-        text: "Por favor, completa todos los campos para tu reserva.",
+        text: "Completa todos los campos.",
         icon: "warning",
         confirmButtonColor: "#ad1457",
       });
@@ -130,21 +134,22 @@ const AgendarTurno = () => {
         fecha,
         hora,
         servicio: servicioSeleccionado,
-        cliente: usuario._id,
+        // 👇 cliente NO se manda más
+        // el backend lo toma del token automáticamente
       });
+
       await Swal.fire({
         title: "¡Reserva Confirmada!",
-        text: "Tu cita ha sido programada. ¡Te esperamos!",
+        text: "Tu cita fue agendada correctamente.",
         icon: "success",
-        background: "#ffffff",
-        color: "#ad1457",
         confirmButtonColor: "#ad1457",
       });
+
       navigate("/usuario");
     } catch (error) {
       Swal.fire({
-        title: "Lo sentimos",
-        text: error.response?.data?.mensaje || "No pudimos agendar tu turno",
+        title: "Error",
+        text: error.response?.data?.mensaje || "No se pudo agendar",
         icon: "error",
       });
     }
@@ -162,11 +167,11 @@ const AgendarTurno = () => {
         </div>
 
         {!usuario ? (
-          <p className="error-sesion">Iniciá sesión para reservar tu lugar.</p>
+          <p className="error-sesion">Iniciá sesión para reservar.</p>
         ) : (
           <form onSubmit={handleSubmit} className="agendar-form">
             <div className="form-group">
-              <label className="agendar-label">¿Qué tratamiento deseas?</label>
+              <label className="agendar-label">Tratamiento</label>
               <select
                 className="agendar-select"
                 value={servicioSeleccionado}
@@ -176,14 +181,14 @@ const AgendarTurno = () => {
                 <option value="">Selecciona un servicio</option>
                 {servicios.map((s) => (
                   <option key={s._id} value={s._id}>
-                    {s.nombre} — {s.duracion || "60"} min
+                    {s.nombre} — {s.duracion || 60} min
                   </option>
                 ))}
               </select>
             </div>
 
             <div className="form-group">
-              <label className="agendar-label">Fecha de tu visita</label>
+              <label className="agendar-label">Fecha</label>
               <input
                 type="date"
                 className="agendar-input"
@@ -195,7 +200,8 @@ const AgendarTurno = () => {
             </div>
 
             <div className="form-group">
-              <label className="agendar-label">Horarios disponibles</label>
+              <label className="agendar-label">Horario</label>
+
               {cargandoHoras ? (
                 <div className="loading-spinner">
                   Buscando disponibilidad...
@@ -212,9 +218,10 @@ const AgendarTurno = () => {
                     {!fecha
                       ? "Primero elige una fecha"
                       : horasDisponibles.length === 0
-                        ? "Sin disponibilidad para este día"
-                        : "Selecciona el horario"}
+                        ? "Sin disponibilidad"
+                        : "Selecciona horario"}
                   </option>
+
                   {horasDisponibles.map((h) => (
                     <option key={h} value={h}>
                       {h}:00 hs

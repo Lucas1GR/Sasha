@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import api from "../api/axios";
 import { useAuth } from "../context/AuthContext";
-import Modal from "./Modal"; // Borramos el "../components/" porque está en la misma carpeta
+import Modal from "./Modal";
 import Swal from "sweetalert2";
 
 const Turnos = () => {
@@ -11,14 +11,14 @@ const Turnos = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [form, setForm] = useState({
-    servicio: "", // Cambiamos mascota por servicio
+    servicio: "",
     fecha: "",
     hora: "",
   });
 
   const fetchTurnos = async () => {
     try {
-      const res = await api.get(`/turnos/dueno/${usuario._id}`);
+      const res = await api.get("/turnos/mis-turnos");
       setTurnos(res.data);
     } catch (err) {
       console.error("Error cargando turnos:", err);
@@ -28,7 +28,10 @@ const Turnos = () => {
   const fetchDisponibles = async (fecha) => {
     if (!fecha) return;
     try {
-      const res = await api.get(`/turnos/disponibles?fecha=${fecha}`);
+      const [yyyy, mm, dd] = fecha.split("-");
+      const res = await api.get(
+        `/turnos/disponibles?fecha=${dd}-${mm}-${yyyy}`,
+      );
       setHorasDisponibles(res.data);
     } catch (err) {
       console.error("Error cargando horarios:", err);
@@ -50,7 +53,7 @@ const Turnos = () => {
     }
 
     try {
-      await api.post("/turnos", { ...form, dueno: usuario._id });
+      await api.post("/turnos", form);
       Swal.fire({
         title: "¡Turno Reservado!",
         text: "Te esperamos para brillar",

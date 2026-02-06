@@ -7,8 +7,7 @@
   justify-content: space-between;
   align-items: center;
   z-index: 1000;
-  transition: all 0.4s ease;
-  background: transparent;
+  background: transparent; /* 👈 antes transparent */
 }
 
 /* Efecto cuando bajás el scroll */
