@@ -8,7 +8,7 @@ const servicioSchema = new mongoose.Schema(
     duracion: { type: Number, required: true }, // En minutos, ej: 60
     categoria: {
       type: String,
-      enum: ["Facial", "Corporal", "Pestañas/Cejas", "Otros"],
+      enum: ["Estética", "Facial", "Corporal", "Pestañas/Cejas", "Otros"],
     },
     activo: { type: Boolean, default: true },
   },

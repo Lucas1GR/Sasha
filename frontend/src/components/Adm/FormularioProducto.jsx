@@ -8,11 +8,12 @@ const FormularioProducto = ({
   servicioEditando,
 }) => {
   const [formData, setFormData] = useState({
-    name: "",
-    price: "",
-    description: "",
-    category: "Estética",
-    image: "",
+    nombre: "",
+    precio: "",
+    duracion: "",
+    descripcion: "",
+    categoria: "Estética",
+    imagen: "",
   });
 
   // Si estamos editando, cargamos los datos del servicio en el formulario
@@ -53,50 +54,67 @@ const FormularioProducto = ({
       <h3>{servicioEditando ? "Editar Servicio" : "Nuevo Servicio"}</h3>
 
       <div className="mb-3">
-        <label>Nombre del Servicio</label>
+        <label htmlFor="nombre">Nombre del Servicio</label>
         <input
+          id="nombre"
           type="text"
-          name="name"
+          name="nombre"
           className="form-control"
-          value={formData.name}
+          value={formData.nombre}
           onChange={handleChange}
           required
         />
       </div>
 
       <div className="mb-3">
-        <label>Precio ($)</label>
+        <label htmlFor="precio">Precio ($)</label>
         <input
+          id="precio"
           type="number"
-          name="price"
+          name="precio"
           className="form-control"
-          value={formData.price}
+          value={formData.precio}
           onChange={handleChange}
           required
         />
       </div>
 
       <div className="mb-3">
-        <label>URL de la Imagen (o link de Cloudinary)</label>
+        <label htmlFor="imagen">URL de la Imagen</label>
         <input
+          id="imagen"
           type="text"
-          name="image"
+          name="imagen"
           className="form-control"
-          value={formData.image}
+          value={formData.imagen}
           onChange={handleChange}
           placeholder="https://res.cloudinary.com/..."
         />
       </div>
 
       <div className="mb-3">
-        <label>Descripción</label>
+        <label htmlFor="descripcion">Descripción</label>
         <textarea
-          name="description"
+          id="descripcion"
+          name="descripcion"
           className="form-control"
-          value={formData.description}
+          value={formData.descripcion}
           onChange={handleChange}
         ></textarea>
       </div>
+
+      <div className="mb-3">
+        <label htmlFor="duracion">Duración (minutos)</label>
+        <input
+          id="duracion"
+          type="number"
+          name="duracion"
+          className="form-control"
+          value={formData.duracion}
+          onChange={handleChange}
+          required
+        />
+      </div>  
 
       <div className="d-flex gap-2">
         <button type="submit" className="btn-save-sasha">
