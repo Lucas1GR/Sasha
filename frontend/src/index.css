@@ -2,7 +2,7 @@
   /* Variables de color de Sasha */
   --sasha-pink: #ad1457;
   --sasha-gold: #d4a373;
-  --bg-light: #fdfdfd;
+  --bg-light: #ffffff;
   --text-dark: #333333;
 }
 
@@ -39,4 +39,11 @@ p {
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 1px;
+}
+
+.sasha-form-container label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 5px;
+  color: #333;
 }
