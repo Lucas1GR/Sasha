@@ -8,7 +8,7 @@ const verificarRol = require("../middlewares/roles");
 // Lo usan las clientas para ver qué elegir y el Admin para gestionar
 router.get("/", async (req, res) => {
   try {
-    const servicios = await Servicio.find({ activo: true }).sort({ nombre: 1 });
+    const servicios = await Servicio.find({ active: true }).sort({ nombre: 1 });
     res.json(servicios);
   } catch (error) {
     console.error("Error obteniendo servicios:", error);
@@ -20,17 +20,18 @@ router.get("/", async (req, res) => {
 router.post(
   "/",
   autenticarToken,
-  verificarRol("adminPrincipal"),
+  //verificarRol("adminPrincipal"),
   async (req, res) => {
     try {
-      const { nombre, precio, duracion, categoria, descripcion } = req.body;
+      const { name, price, duration, category, description, image } = req.body;
 
       const nuevoServicio = new Servicio({
-        nombre,
-        precio,
-        duracion,
-        categoria,
-        descripcion,
+        name,
+        price,
+        duration,
+        category,
+        description,
+        image,
       });
 
       await nuevoServicio.save();
