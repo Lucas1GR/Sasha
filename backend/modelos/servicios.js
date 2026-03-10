@@ -2,15 +2,16 @@ const mongoose = require("mongoose");
 
 const servicioSchema = new mongoose.Schema(
   {
-    nombre: { type: String, required: true }, // Ej: "Limpieza Facial Profunda"
-    descripcion: { type: String },
-    precio: { type: Number, required: true },
-    duracion: { type: Number, required: true }, // En minutos, ej: 60
-    categoria: {
+    name: { type: String, required: true }, // Ej: "Limpieza Facial Profunda"
+    description: { type: String },
+    price: { type: Number, required: true },
+    duration: { type: Number, required: true }, // En minutos, ej: 60
+    image: { type: String },
+    category: {
       type: String,
       enum: ["Estética", "Facial", "Corporal", "Pestañas/Cejas", "Otros"],
     },
-    activo: { type: Boolean, default: true },
+    active: { type: Boolean, default: true },
   },
   { timestamps: true },
 );
