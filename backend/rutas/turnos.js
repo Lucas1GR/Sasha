@@ -118,7 +118,7 @@ router.post("/", autenticarToken, async (req, res) => {
       servicio: bloqueado ? null : servicio,
       cliente: cliente,
       bloqueado: bloqueado || false,
-      nombreCliente: nombreClienteManual || null,
+      nombreClienteManual: nombreClienteManual || null,
     });
 
     await nuevoTurno.save();
@@ -132,7 +132,7 @@ router.post("/", autenticarToken, async (req, res) => {
 router.get("/mis-turnos", autenticarToken, async (req, res) => {
   try {
     const turnos = await Turno.find({ cliente: req.usuario.id })
-      .populate("servicio", "nombre precio")
+      .populate("servicio", "name price")
       .sort({ fecha: -1 });
     res.json(turnos);
   } catch (error) {
@@ -148,7 +148,7 @@ router.get("/agenda-completa", autenticarToken, async (req, res) => {
       return res.status(403).json({ mensaje: "No autorizado" });
     const turnos = await Turno.find()
       .populate("cliente", "nombres apellidos telefono")
-      .populate("servicio", "nombre")
+      .populate("servicio", "name")
       .sort({ fecha: -1 });
     res.json(turnos);
   } catch (error) {
