@@ -181,7 +181,7 @@ const AgendarTurno = () => {
                 <option value="">Selecciona un servicio</option>
                 {servicios.map((s) => (
                   <option key={s._id} value={s._id}>
-                    {s.nombre} — {s.duracion || 60} min
+                    {s.name} — {s.duration || 60} min
                   </option>
                 ))}
               </select>
