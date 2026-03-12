@@ -41,28 +41,20 @@ const TurnosAdmin = () => {
   ];
 
   const cargarDatos = async () => {
-    try {
-      const [resTurnos, resDuenos, resMascotas] = await Promise.all([
-        api.get("/turnos"),
-        api.get("/duenos"),
-        api.get("/mascotas"),
-      ]);
+  try {
+    const [resTurnos, resClientes, resServicios] = await Promise.all([
+      api.get("/turnos/agenda-completa"),
+      api.get("/clientes"),
+      api.get("/products"),
+    ]);
 
-      setTodosLosTurnos(resTurnos.data);
-      setListaClientes(
-        Array.isArray(resDuenos.data)
-          ? resDuenos.data
-          : resDuenos.data.duenos || [],
-      );
-      setListaFichas(
-        Array.isArray(resMascotas.data)
-          ? resMascotas.data
-          : resMascotas.data.mascotas || [],
-      );
-    } catch (error) {
-      console.error("Error al cargar agenda:", error);
-    }
-  };
+    setTodosLosTurnos(resTurnos.data);
+    setListaClientes(resClientes.data);
+    setListaFichas(resServicios.data);
+  } catch (error) {
+    console.error("Error al cargar agenda:", error);
+  }
+};
 
   useEffect(() => {
     cargarDatos();
@@ -145,8 +137,8 @@ const TurnosAdmin = () => {
         hora: turnoEnProceso.hora,
         bloqueado: esBloqueo,
         nombreCliente: esBloqueo ? motivoBloqueo : null,
-        mascota: esBloqueo ? null : fichaSeleccionada,
-        dueno: esBloqueo ? usuario._id : clienteSeleccionado,
+        servicio: esBloqueo ? null : fichaSeleccionada,
+        cliente: esBloqueo ? usuario._id : clienteSeleccionado,
       };
 
       await api.post("/turnos", payload);
@@ -178,7 +170,7 @@ const TurnosAdmin = () => {
 
     if (result.isConfirmed) {
       try {
-        await api.delete(`/turnos/${id}`);
+        await api.patch(`/turnos/cancelar/${id}`);
         cargarDatos();
         Swal.fire("Cancelado", "", "success");
       } catch (error) {
@@ -239,9 +231,9 @@ const TurnosAdmin = () => {
                 ) : (
                   <>
                     <div className="client-name">
-                      {turno.dueno?.nombres} {turno.dueno?.apellidos}
+                      {turno.cliente?.nombres} {turno.cliente?.apellidos}
                     </div>
-                    <div className="service-name">{turno.mascota?.nombre}</div>
+                    <div className="service-name">{turno.servicio?.name}</div>
                     <button
                       className="btn-cancel-mini"
                       onClick={() => handleCancelarTurno(turno._id)}
@@ -307,15 +299,11 @@ const TurnosAdmin = () => {
                   disabled={!clienteSeleccionado}
                 >
                   <option value="">-- Seleccionar --</option>
-                  {listaFichas
-                    .filter(
-                      (f) => (f.dueno?._id || f.dueno) === clienteSeleccionado,
-                    )
-                    .map((f) => (
-                      <option key={f._id} value={f._id}>
-                        {f.nombre}
-                      </option>
-                    ))}
+                  {listaFichas.map((f) => (
+                    <option key={f._id} value={f._id}>
+                      {f.nombre}
+                    </option>
+                  ))}
                 </Form.Select>
               </Form.Group>
             </>

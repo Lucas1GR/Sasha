@@ -85,7 +85,7 @@ exports.cancelarTurno = async (req, res) => {
 
     // Solo el admin o el propio dueño del turno pueden cancelar
     if (
-      userRol !== "adminPrincipal" &&
+      userRol !== "admin" &&
       String(turno.cliente) !== String(userId)
     ) {
       return res

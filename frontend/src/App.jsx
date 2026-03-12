@@ -9,7 +9,7 @@ import { useAuth } from "./context/AuthContext";
 import Navbar from "./components/Nav/Nav";
 import Footer from "./components/Footer/Footer";
 // Importamos el nuevo panel de gestión de servicios
-import AdminPanel from "./components/adm/AdminPanel";
+import AdminPanel from "./components/Adm/AdminPanel";
 
 // Páginas Base
 import Home from "./pages/Home";
@@ -48,7 +48,7 @@ function App() {
                 <Login />
               ) : (
                 <Navigate
-                  to={usuario.rol === "adminPrincipal" ? "/admin" : "/usuario"}
+                  to={usuario.rol === "admin" ? "/admin" : "/usuario"}
                 />
               )
             }
@@ -60,7 +60,7 @@ function App() {
                 <Registro />
               ) : (
                 <Navigate
-                  to={usuario.rol === "adminPrincipal" ? "/admin" : "/usuario"}
+                  to={usuario.rol === "admin" ? "/admin" : "/usuario"}
                 />
               )
             }
@@ -74,7 +74,7 @@ function App() {
           {/* --- PANEL ADMIN (ESTÉTICA SASHA) --- */}
           <Route
             path="/admin"
-            element={<RutasProtegidas rol="adminPrincipal" />}
+            element={<RutasProtegidas rol="admin" />}
           >
             <Route index element={<HomeAdmin />} />
             <Route path="clientes" element={<GestionClientes />} />
@@ -90,7 +90,7 @@ function App() {
             path="/agendar"
             element={
               usuario ? (
-                usuario.rol === "adminPrincipal" ? (
+                usuario.rol === "admin" ? (
                   <Navigate to="/admin/turnos" />
                 ) : (
                   <Navigate to="/usuario/mis-turnos" />

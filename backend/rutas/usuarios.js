@@ -8,7 +8,7 @@ const verificarRol = require("../middlewares/roles");
 router.get(
   "/",
   autenticarToken,
-  verificarRol("adminPrincipal"),
+  verificarRol("admin"),
   async (req, res) => {
     try {
       // Filtramos para que NO traiga a los clientes comunes, solo a los que tienen roles de admin o staff

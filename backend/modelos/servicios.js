@@ -10,6 +10,7 @@ const servicioSchema = new mongoose.Schema(
     category: {
       type: String,
       enum: ["Estética", "Facial", "Corporal", "Pestañas/Cejas", "Otros"],
+      required: true
     },
     active: { type: Boolean, default: true },
   },

@@ -15,7 +15,7 @@ router.get('/', async (req, res) => {
 });
 
 // 🔴 AGREGAR FOTO (Solo Admin)
-router.post('/', autenticarToken, verificarRol('adminPrincipal', 'adminSecundario'), async (req, res) => {
+router.post('/', autenticarToken, verificarRol('admin', 'adminSecundario'), async (req, res) => {
   try {
     const { titulo, url } = req.body;
     if (!titulo || !url) return res.status(400).json({ mensaje: 'Faltan datos' });
@@ -29,7 +29,7 @@ router.post('/', autenticarToken, verificarRol('adminPrincipal', 'adminSecundari
 });
 
 // 🔴 ELIMINAR FOTO (Solo Admin)
-router.delete('/:id', autenticarToken, verificarRol('adminPrincipal', 'adminSecundario'), async (req, res) => {
+router.delete('/:id', autenticarToken, verificarRol('admin', 'adminSecundario'), async (req, res) => {
   try {
     await Foto.findByIdAndDelete(req.params.id);
     res.json({ mensaje: 'Foto eliminada' });

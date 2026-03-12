@@ -26,7 +26,7 @@ const usuarioSchema = new Schema(
     // Gestión de permisos
     rol: {
       type: String,
-      enum: ["usuario", "adminSecundario", "adminPrincipal"],
+      enum: ["usuario", "profesional", "admin"],
       default: "usuario",
     },
     fotoPerfil: { type: String, default: null },

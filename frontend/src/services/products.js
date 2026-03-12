@@ -6,16 +6,17 @@
 import api from "../api/axios"; 
 
 // 2. Obtener productos (con filtro de categoría opcional)
-export const getProducts = async (category) => {
+export const getProducts = async (category, admin = false) => {
   try {
-    // Axios maneja los query params (?category=...) de forma limpia así:
-    const params = category ? { category } : {};
-    
+    const params = {};
+
+    if (category) params.category = category;
+    if (admin) params.admin = true;
+
     const response = await api.get("/products", { params });
-    return response.data; // Axios devuelve la data dentro de .data
+    return response.data;
   } catch (error) {
     console.error("Error en getProducts:", error);
-    // Lanzamos el error para que el componente lo capture
     throw error.response?.data || new Error("Error al obtener productos");
   }
 };
