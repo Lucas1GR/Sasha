@@ -26,7 +26,7 @@ const GestionFichas = () => {
     try {
       const [resF, resD, resU] = await Promise.all([
         api.get("/mascotas"), // Mantenemos el endpoint de la base de datos
-        api.get("/duenos"),
+        api.get("/clientes"),
         api.get("/usuarios"),
       ]);
 

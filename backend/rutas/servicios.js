@@ -8,7 +8,18 @@ const verificarRol = require("../middlewares/roles");
 // Lo usan las clientas para ver qué elegir y el Admin para gestionar
 router.get("/", async (req, res) => {
   try {
-    const servicios = await Servicio.find({ active: true }).sort({ name: 1 });
+    const { admin } = req.query;
+
+    let servicios;
+
+    if (admin === "true") {
+      // El admin ve todos
+      servicios = await Servicio.find().sort({ name: 1 });
+    } else {
+      // Clientes solo ven activos
+      servicios = await Servicio.find({ active: true }).sort({ name: 1 });
+    }
+
     res.json(servicios);
   } catch (error) {
     console.error("Error obteniendo servicios:", error);
@@ -20,7 +31,7 @@ router.get("/", async (req, res) => {
 router.post(
   "/",
   autenticarToken,
-  verificarRol("adminPrincipal"),
+  verificarRol("admin"),
   async (req, res) => {
     try {
       const { name, price, duration, category, description, image } = req.body;
@@ -47,7 +58,7 @@ router.post(
 router.put(
   "/:id",
   autenticarToken,
-  verificarRol("adminPrincipal"),
+  verificarRol("admin"),
   async (req, res) => {
     try {
       const servicioActualizado = await Servicio.findByIdAndUpdate(
@@ -69,7 +80,7 @@ router.put(
 router.delete(
   "/:id",
   autenticarToken,
-  verificarRol("adminPrincipal"),
+  verificarRol("admin"),
   async (req, res) => {
     try {
       // En lugar de borrarlo, podrías poner activo: false para no romper turnos viejos

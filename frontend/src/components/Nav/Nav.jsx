@@ -66,13 +66,13 @@ const Nav = () => {
             {/* Botón dinámico según Rol */}
             <Link
               to={
-                usuario.rol === "admin" || usuario.rol === "adminPrincipal"
+                usuario.rol === "admin" || usuario.rol === "admin"
                   ? "/admin"
                   : "/mis-turnos" // Ajustado a una ruta más común
               }
               className="nav-btn panel-btn"
             >
-              {usuario.rol === "admin" || usuario.rol === "adminPrincipal"
+              {usuario.rol === "admin" || usuario.rol === "admin"
                 ? "GESTIÓN"
                 : "MIS TURNOS"}
             </Link>

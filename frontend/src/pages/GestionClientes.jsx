@@ -24,7 +24,7 @@ const GestionClientes = () => {
 
   const cargarDuenos = async () => {
     try {
-      const res = await api.get("/duenos");
+      const res = await api.get("/clientes");
       const data = Array.isArray(res.data) ? res.data : [];
       setDuenos(data);
     } catch (err) {
@@ -60,7 +60,7 @@ const GestionClientes = () => {
           background: "#1e1e1e",
           color: "#fff",
         });
-      await api.post("/duenos", nuevoDueno);
+      await api.post("/clientes", nuevoDueno);
       Swal.fire({
         title: "¡Creado!",
         icon: "success",
@@ -91,7 +91,7 @@ const GestionClientes = () => {
 
   const handleEditarDueno = async () => {
     try {
-      await api.put(`/duenos/${duenoEditar._id}`, duenoEditar);
+      await api.put(`/clientes/${duenoEditar._id}`, duenoEditar);
       Swal.fire({
         title: "¡Actualizado!",
         icon: "success",
@@ -115,7 +115,7 @@ const GestionClientes = () => {
   const handleEliminarDueno = async (id) => {
     const result = await Swal.fire({
       title: "¿Eliminar dueño?",
-      text: "Se borrarán también sus mascotas y turnos.",
+      text: "Se borrarán también sus turnos.",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#d33",
@@ -126,7 +126,7 @@ const GestionClientes = () => {
     });
     if (result.isConfirmed) {
       try {
-        await api.delete(`/duenos/${id}`);
+        await api.delete(`/clientes/${id}`);
         cargarDuenos();
         Swal.fire({
           title: "Eliminado",
@@ -181,7 +181,7 @@ const GestionClientes = () => {
               <th>DNI</th>
               <th>Contacto</th>
               <th>Dirección</th>
-              <th>Mascotas</th>
+              <th>Tipo de piel</th>
               <th>Acciones</th>
             </tr>
           </thead>
@@ -205,10 +205,10 @@ const GestionClientes = () => {
                 </td>
                 <td>{d.direccion || "-"}</td>
                 <td>
-                  {d.mascotas?.length > 0 ? (
-                    d.mascotas.map((m) => m.nombre).join(", ")
+                  {d.tipoDePiel ? (
+                    d.tipoDePiel
                   ) : (
-                    <span className="text-muted small">Sin servicios</span>
+                    <span className="text-muted small">No especificado</span>
                   )}
                 </td>
                 <td>

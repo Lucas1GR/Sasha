@@ -5,9 +5,9 @@ function verificarRol(...rolesPermitidos) {
 
     if (!rol) return res.status(401).json({ mensaje: 'No autenticado' });
 
-    // adminPrincipal siempre tiene acceso
-    if (rol === 'adminPrincipal') {
-      console.log("✅ acceso total para adminPrincipal");
+    // admin siempre tiene acceso
+    if (rol === 'admin') {
+      console.log("✅ acceso total para admin");
       return next();
     }
 

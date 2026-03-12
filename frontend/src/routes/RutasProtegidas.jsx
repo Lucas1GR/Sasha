@@ -11,12 +11,12 @@ const RutasProtegidas = ({ rol }) => {
   if (rol && usuario.rol !== rol) {
     // Redirección inteligente:
     // Sasha (Admin) intentando entrar como clienta
-    if (usuario.rol === "adminPrincipal" && rol === "usuario") {
+    if (usuario.rol === "admin" && rol === "usuario") {
       return <Navigate to="/admin" replace />;
     }
 
     // Clienta intentando entrar al panel Admin de Sasha
-    if (usuario.rol === "usuario" && rol === "adminPrincipal") {
+    if (usuario.rol === "usuario" && rol === "admin") {
       return <Navigate to="/usuario" replace />;
     }
 

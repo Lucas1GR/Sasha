@@ -55,7 +55,7 @@ router.put("/mi-perfil", autenticarToken, async (req, res) => {
 router.get(
   "/",
   autenticarToken,
-  verificarRol("adminPrincipal", "adminSecundario"),
+  verificarRol("admin", "adminSecundario"),
   async (req, res) => {
     try {
       // Traemos todos los que tengan rol 'usuario'
@@ -73,7 +73,7 @@ router.get(
 router.post(
   "/",
   autenticarToken,
-  verificarRol("adminPrincipal", "adminSecundario"),
+  verificarRol("admin", "adminSecundario"),
   validarCliente,
   async (req, res) => {
     try {
@@ -102,7 +102,7 @@ router.post(
 router.delete(
   "/:id",
   autenticarToken,
-  verificarRol("adminPrincipal", "adminSecundario"),
+  verificarRol("admin", "adminSecundario"),
   async (req, res) => {
     try {
       await Usuario.findByIdAndDelete(req.params.id);
@@ -111,6 +111,30 @@ router.delete(
       res.status(500).json({ mensaje: "Error al eliminar" });
     }
   },
+);
+
+// Editar cliente
+router.put(
+  "/:id",
+  autenticarToken,
+  verificarRol("admin", "adminSecundario"),
+  async (req, res) => {
+    try {
+      const actualizado = await Usuario.findByIdAndUpdate(
+        req.params.id,
+        req.body,
+        { new: true }
+      ).select("-password");
+
+      if (!actualizado) {
+        return res.status(404).json({ mensaje: "Cliente no encontrado" });
+      }
+
+      res.json(actualizado);
+    } catch (error) {
+      res.status(500).json({ mensaje: "Error al actualizar cliente" });
+    }
+  }
 );
 
 module.exports = router;

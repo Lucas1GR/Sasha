@@ -11,6 +11,9 @@ const turnoSchema = new Schema(
 
     cliente: { type: Schema.Types.ObjectId, ref: "Usuario", default: null },
 
+    // PROFESIONAL QUE ATIENDE EL TURNO
+    profesional: { type: Schema.Types.ObjectId, ref: "Usuario", required: true },
+
     nombreClienteManual: { type: String, default: null },
 
     bloqueado: { type: Boolean, default: false },
@@ -24,6 +27,7 @@ const turnoSchema = new Schema(
   { timestamps: true },
 );
 
-turnoSchema.index({ fecha: 1, hora: 1 }, { unique: true });
+// ahora el turno único es por profesional
+turnoSchema.index({ fecha: 1, hora: 1, profesional: 1 }, { unique: true });
 
 module.exports = mongoose.model("Turno", turnoSchema, "turnos");

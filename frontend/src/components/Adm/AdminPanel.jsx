@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 // 1. Corregimos la ruta: subimos dos niveles (../../) para encontrar services
-import { getProducts, deleteProduct } from "../../services/products";
+import { getProducts, deleteProduct, updateProduct } from "../../services/products";
 import FormularioProducto from "./FormularioProducto";
 import Swal from "sweetalert2";
 import "./AdminPanel.css";
@@ -16,13 +16,26 @@ const AdminPanel = () => {
 
   const cargarServicios = async () => {
     try {
-      const data = await getProducts();
+      const data = await getProducts(null, true);
       setServicios(data);
     } catch (err) {
       // 2. Cambiamos error por err para evitar conflictos
       console.error("Error al cargar servicios:", err);
     }
   };
+  const toggleActivo = async (servicio) => {
+      try {
+        await updateProduct(servicio._id, {
+          ...servicio,
+          active: !servicio.active,
+        });
+
+        cargarServicios();
+      } catch (err) {
+        console.error("Error cambiando estado:", err);
+        Swal.fire("Error", "No se pudo cambiar el estado", "error");
+      }
+    };
 
   const handleEliminar = async (id) => {
     const confirmacion = await Swal.fire({
@@ -88,14 +101,17 @@ const AdminPanel = () => {
             <tr>
               <th>Imagen</th>
               <th>Nombre</th>
+              <th>Categoría</th>
               <th>Precio</th>
+              <th>Duración</th>
+              <th>Estado</th>
               <th>Acciones</th>
             </tr>
           </thead>
           <tbody>
             {servicios.length === 0 ? (
               <tr>
-                <td colSpan="4" style={{ textAlign: "center" }}>
+                <td colSpan="7" style={{ textAlign: "center" }}>
                   No hay servicios cargados
                 </td>
               </tr>
@@ -111,7 +127,15 @@ const AdminPanel = () => {
                     />
                   </td>
                   <td>{s.name}</td>
+                  <td>{s.category}</td>
                   <td>${s.price}</td>
+                  <td>{s.duration} min</td>
+                  <td>{s.active ? (
+                    <span style={{ color: "green", fontWeight: "bold" }}>Activo</span>
+                  ) : (
+                      <span style={{ color: "red", fontWeight: "bold" }}>Inactivo</span>
+                    )}
+                  </td>
                   <td>
                     <button
                       className="btn-edit"
@@ -122,6 +146,14 @@ const AdminPanel = () => {
                     >
                       Editar
                     </button>
+
+                    <button
+                      onClick={() => toggleActivo(s)}
+                      style={{ marginLeft: "5px" }}
+                    >
+                      {s.active ? "Desactivar" : "Activar"}
+                    </button>
+
                     <button
                       className="btn-delete"
                       onClick={() => handleEliminar(s._id)}

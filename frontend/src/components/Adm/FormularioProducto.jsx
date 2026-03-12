@@ -17,9 +17,23 @@ const FormularioProducto = ({
   });
 
   // Si estamos editando, cargamos los datos del servicio en el formulario
+
+  /*useEffect(() => {
+      if (servicioEditando) {
+        setFormData(servicioEditando);
+      }
+    }, [servicioEditando]);*/
+
   useEffect(() => {
     if (servicioEditando) {
-      setFormData(servicioEditando);
+      setFormData({
+        name: servicioEditando.name || "",
+        price: servicioEditando.price || "",
+        duration: servicioEditando.duration || "",
+        description: servicioEditando.description || "",
+        category: servicioEditando.category || "Estética",
+        image: servicioEditando.image || "",
+      });
     }
   }, [servicioEditando]);
 
@@ -75,6 +89,7 @@ const FormularioProducto = ({
           className="form-control"
           value={formData.price}
           onChange={handleChange}
+          min="0"
           required
         />
       </div>
@@ -90,6 +105,21 @@ const FormularioProducto = ({
           onChange={handleChange}
           placeholder="https://res.cloudinary.com/..."
         />
+        {formData.image && (
+          <div style={{ marginTop: "10px" }}>
+            <img
+              src={formData.image}
+              alt="Vista previa"
+              style={{
+                width: "120px",
+                height: "120px",
+                objectFit: "cover",
+                borderRadius: "8px",
+                border: "1px solid #ddd",
+              }}
+            />
+          </div>
+        )}
       </div>
 
       <div className="mb-3">
@@ -112,8 +142,28 @@ const FormularioProducto = ({
           className="form-control"
           value={formData.duration}
           onChange={handleChange}
+          min="15"
+          max="240"
+          step="15"
           required
         />
+      </div>
+      <div className="mb-3">
+        <label htmlFor="category">Categoría</label>
+        <select
+          id="category"
+          name="category"
+          className="form-control"
+          value={formData.category}
+          onChange={handleChange}
+          required
+        >
+          <option value="Estética">Estética</option>
+          <option value="Facial">Facial</option>
+          <option value="Corporal">Corporal</option>
+          <option value="Pestañas/Cejas">Pestañas / Cejas</option>
+          <option value="Otros">Otros</option>
+        </select>
       </div>  
 
       <div className="d-flex gap-2">
