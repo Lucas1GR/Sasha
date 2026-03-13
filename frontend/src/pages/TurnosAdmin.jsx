@@ -133,10 +133,10 @@ const TurnosAdmin = () => {
 
     try {
       const payload = {
-        fecha: turnoEnProceso.fecha + "T12:00:00",
+        fecha: turnoEnProceso.fecha,
         hora: turnoEnProceso.hora,
         bloqueado: esBloqueo,
-        nombreCliente: esBloqueo ? motivoBloqueo : null,
+        nombreClienteManual: esBloqueo ? motivoBloqueo : null,
         servicio: esBloqueo ? null : fichaSeleccionada,
         cliente: esBloqueo ? usuario._id : clienteSeleccionado,
       };
@@ -301,7 +301,7 @@ const TurnosAdmin = () => {
                   <option value="">-- Seleccionar --</option>
                   {listaFichas.map((f) => (
                     <option key={f._id} value={f._id}>
-                      {f.nombre}
+                      {f.name}
                     </option>
                   ))}
                 </Form.Select>

@@ -2,13 +2,14 @@ import { useState, useEffect } from "react";
 import api from "../api/axios";
 import { useAuth } from "../context/AuthContext";
 import Modal from "./Modal";
-import Swal from "sweetalert2";
+import Swal from "sweetalert2"; 
 
 const Turnos = () => {
   const { usuario } = useAuth();
   const [turnos, setTurnos] = useState([]);
   const [horasDisponibles, setHorasDisponibles] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [servicios, setServicios] = useState([]); 
 
   const [form, setForm] = useState({
     servicio: "",
@@ -16,14 +17,23 @@ const Turnos = () => {
     hora: "",
   });
 
+  const fetchServicios = async () => {
+  try {
+    const res = await api.get("/products");
+    setServicios(res.data);
+  } catch (err) {
+    console.error("Error cargando servicios:", err);
+  }
+};
+
   const fetchTurnos = async () => {
-    try {
-      const res = await api.get("/turnos/mis-turnos");
-      setTurnos(res.data);
-    } catch (err) {
-      console.error("Error cargando turnos:", err);
-    }
-  };
+  try {
+    const res = await api.get("/turnos/mis-turnos");
+    setTurnos(res.data);
+  } catch (err) {
+    console.error("Error cargando turnos:", err);
+  }
+};
 
   const fetchDisponibles = async (fecha) => {
     if (!fecha) return;
@@ -39,7 +49,10 @@ const Turnos = () => {
   };
 
   useEffect(() => {
-    if (usuario?._id) fetchTurnos();
+    if (usuario?._id) {
+      fetchTurnos();
+      fetchServicios();
+    }
   }, [usuario]);
 
   const handleChange = (e) => {
@@ -95,7 +108,7 @@ const Turnos = () => {
               <div className="sasha-card p-3 shadow-sm border-0 h-100">
                 <div className="d-flex justify-content-between">
                   <span className="fw-bold text-pink">
-                    {t.servicio || "Servicio General"}
+                    {t.servicio?.name || "Servicio General"}
                   </span>
                   <span className="badge rounded-pill bg-light text-dark">
                     {t.hora}:00 hs
@@ -140,10 +153,11 @@ const Turnos = () => {
             onChange={handleChange}
           >
             <option value="">Seleccionar...</option>
-            <option value="Uñas Esculpidas">Uñas Esculpidas</option>
-            <option value="Perfilado de Cejas">Perfilado de Cejas</option>
-            <option value="Masajes Relajantes">Masajes Relajantes</option>
-            <option value="Limpieza Facial">Limpieza Facial</option>
+            {servicios.map((s) => (
+              <option key={s._id} value={s._id}>
+                {s.name}
+              </option>
+            ))}
           </select>
         </div>
 
