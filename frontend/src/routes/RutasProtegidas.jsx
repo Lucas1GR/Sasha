@@ -8,7 +8,9 @@ const RutasProtegidas = ({ rol }) => {
   if (!usuario) return <Navigate to="/login" replace />;
 
   // 2. Si hay usuario pero no tiene el rol correcto
-  if (rol && usuario.rol !== rol) {
+  const rolesPermitidos = Array.isArray(rol) ? rol : [rol];
+
+  if (rol && !rolesPermitidos.includes(usuario.rol)) {
     // Redirección inteligente:
     // Sasha (Admin) intentando entrar como clienta
     if (usuario.rol === "admin" && rol === "usuario") {

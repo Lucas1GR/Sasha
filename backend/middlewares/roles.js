@@ -11,11 +11,6 @@ function verificarRol(...rolesPermitidos) {
       return next();
     }
 
-    if (rol === 'adminSecundario' && rolesPermitidos.includes('adminSecundario')) {
-      console.log("✅ acceso para adminSecundario");
-      return next();
-    }
-
     if (rolesPermitidos.includes(rol)) {
       console.log("✅ acceso permitido:", rol);
       return next();
