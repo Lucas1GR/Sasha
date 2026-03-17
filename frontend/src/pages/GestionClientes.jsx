@@ -1,3 +1,4 @@
+import { useAuth } from "../context/AuthContext";
 import { useEffect, useState } from "react";
 import { Table, Button, Modal, Form, InputGroup } from "react-bootstrap";
 import api from "../api/axios";
@@ -6,6 +7,7 @@ import "./GestionClientes.css";
 
 // Cambiamos el nombre aquí para que coincida con el export final
 const GestionClientes = () => {
+  const { usuario } = useAuth();
   const [duenos, setDuenos] = useState([]);
   const [busqueda, setBusqueda] = useState("");
 
@@ -222,13 +224,15 @@ const GestionClientes = () => {
                   >
                     ✏️
                   </Button>
-                  <Button
-                    size="sm"
-                    className="btn-icon danger"
-                    onClick={() => handleEliminarDueno(d._id)}
-                  >
-                    🗑️
-                  </Button>
+                  {usuario?.rol === "admin" && (
+                    <Button
+                      size="sm"
+                      className="btn-icon danger"
+                      onClick={() => handleEliminarDueno(d._id)}
+                    >
+                      🗑️
+                    </Button>
+                  )}
                 </td>
               </tr>
             ))}

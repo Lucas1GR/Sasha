@@ -74,17 +74,23 @@ function App() {
           {/* --- PANEL ADMIN (ESTÉTICA SASHA) --- */}
           <Route
             path="/admin"
-            element={<RutasProtegidas rol="admin" />}
+            element={<RutasProtegidas rol={["admin", "profesional"]} />}
           >
             <Route index element={<HomeAdmin />} />
             <Route path="clientes" element={<GestionClientes />} />
-            <Route path="staff" element={<EmpleadosList />} />
+            <Route path="staff" element={<RutasProtegidas rol="admin" />}>
+              <Route index element={<EmpleadosList />} />
+            </Route>
             <Route path="turnos" element={<TurnosAdmin />} />
-            <Route path="galeria" element={<GaleriaAdmin />} />
+            <Route path="galeria" element={<RutasProtegidas rol="admin" />}>
+              <Route index element={<GaleriaAdmin />} />
+            </Route>
 
             {/* AGREGÁ ESTA LÍNEA AQUÍ ABAJO */}
-            <Route path="servicios" element={<AdminPanel />} />
-          </Route>
+            <Route path="servicios" element={<RutasProtegidas rol="admin" />}>
+              <Route index element={<AdminPanel />} />
+            </Route>
+        </Route>  
           {/* --- RUTA DE ACCESO RÁPIDO A TURNOS --- */}
           <Route
             path="/agendar"

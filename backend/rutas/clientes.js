@@ -55,7 +55,7 @@ router.put("/mi-perfil", autenticarToken, async (req, res) => {
 router.get(
   "/",
   autenticarToken,
-  verificarRol("admin", "adminSecundario"),
+  verificarRol("admin", "profesional"),
   async (req, res) => {
     try {
       // Traemos todos los que tengan rol 'usuario'
@@ -73,7 +73,7 @@ router.get(
 router.post(
   "/",
   autenticarToken,
-  verificarRol("admin", "adminSecundario"),
+  verificarRol("admin", "profesional"),
   validarCliente,
   async (req, res) => {
     try {
@@ -102,7 +102,7 @@ router.post(
 router.delete(
   "/:id",
   autenticarToken,
-  verificarRol("admin", "adminSecundario"),
+  verificarRol("admin"),
   async (req, res) => {
     try {
       await Usuario.findByIdAndDelete(req.params.id);
@@ -117,7 +117,7 @@ router.delete(
 router.put(
   "/:id",
   autenticarToken,
-  verificarRol("admin", "adminSecundario"),
+  verificarRol("admin", "profesional"),
   async (req, res) => {
     try {
       const actualizado = await Usuario.findByIdAndUpdate(

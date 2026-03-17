@@ -219,7 +219,10 @@ router.post("/", autenticarToken, async (req, res) => {
 // 3. Mis Turnos (Para la clienta)
 router.get("/mis-turnos", autenticarToken, async (req, res) => {
   try {
-    const turnos = await Turno.find({ cliente: req.usuario.id })
+    const turnos = await Turno.find({
+      cliente: req.usuario.id,
+      estado: { $ne: "cancelado" },
+    })
       .populate("servicio", "name price")
       .sort({ fecha: -1 });
     res.json(turnos);
@@ -314,7 +317,7 @@ router.post("/bloquear", autenticarToken, async (req, res) => {
 // Agenda completa (admin)
 router.get("/agenda-completa", autenticarToken, async (req, res) => {
   try {
-    if (req.usuario.rol !== "admin") {
+    if (!["admin", "profesional"].includes(req.usuario.rol)) {
       return res.status(403).json({ mensaje: "No autorizado" });
     }
 
@@ -326,7 +329,10 @@ router.get("/agenda-completa", autenticarToken, async (req, res) => {
       filtro.profesional = profesionalId;
     }
 
-    const turnos = await Turno.find(filtro)
+    const turnos = await Turno.find({
+      ...filtro,
+      estado: { $ne: "cancelado" },
+    })
       .populate("cliente", "nombres apellidos telefono")
       .populate("servicio", "name duration")
       .populate("profesional", "nombres apellidos")

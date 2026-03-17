@@ -124,6 +124,13 @@ const TurnosAdmin = () => {
   const handleGuardar = async () => {
     if (esBloqueo && !motivoBloqueo.trim())
       return Swal.fire({ title: "Falta motivo", icon: "warning" });
+    if (usuario?.rol !== "admin" && esBloqueo) {
+      return Swal.fire({
+        title: "No permitido",
+        text: "Solo el administrador puede bloquear horarios",
+        icon: "error",
+      });
+    }
     if (!esBloqueo && (!clienteSeleccionado || !fichaSeleccionada))
       return Swal.fire({
         title: "Faltan datos",
@@ -194,6 +201,7 @@ const TurnosAdmin = () => {
             Control diario de citas y bloqueos
           </p>
         </div>
+        {usuario?.rol === "admin" && (
         <Button
           variant="outline-danger"
           className="btn-sasha-outline"
@@ -201,6 +209,7 @@ const TurnosAdmin = () => {
         >
           🔒 Cerrar Día Completo
         </Button>
+      )}
       </div>
 
       <div className="filtros-agenda mb-4">
@@ -261,13 +270,15 @@ const TurnosAdmin = () => {
           <Modal.Title>Agendar {turnoEnProceso.hora}:00 hs</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form.Check
-            type="switch"
-            label="Bloquear horario (No disponible)"
-            checked={esBloqueo}
-            onChange={(e) => setEsBloqueo(e.target.checked)}
-            className="mb-4 fw-bold text-pink"
-          />
+          {usuario?.rol === "admin" && (
+            <Form.Check
+              type="switch"
+              label="Bloquear horario (No disponible)"
+              checked={esBloqueo}
+              onChange={(e) => setEsBloqueo(e.target.checked)}
+              className="mb-4 fw-bold text-pink"
+            />
+          )}
           {esBloqueo ? (
             <Form.Group>
               <Form.Label>Motivo</Form.Label>

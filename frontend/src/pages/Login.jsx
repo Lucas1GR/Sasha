@@ -31,7 +31,7 @@ const Login = () => {
 
       // Redirigir según el rol
       const userRole = res.data.usuario.rol;
-      if (userRole === "admin" || userRole === "admin") {
+      if (userRole === "admin" || userRole === "profesional") {
         navigate("/admin");
       } else {
         navigate("/");
