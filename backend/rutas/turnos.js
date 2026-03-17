@@ -7,13 +7,13 @@ const autenticarToken = require("../middlewares/autorizaciones");
 
 // Feriados actualizados a 2026
 const diasFeriados = [
-  "01-01-2026",
-  "24-03-2026",
-  "02-04-2026",
-  "01-05-2026",
-  "25-05-2026",
-  "09-07-2026",
-  "25-12-2026",
+  "2026-01-01",
+  "2026-03-24",
+  "2026-04-02",
+  "2026-05-01",
+  "2026-05-25",
+  "2026-07-09",
+  "2026-12-25",
 ];
 
 const formatearFechaString = (dateObj) => {
@@ -29,7 +29,9 @@ const getTiempoArgentina = () => {
   const utc = now.getTime() + now.getTimezoneOffset() * 60000;
   const fechaArg = new Date(utc + 3600000 * offsetArgentina);
   return {
-    fechaString: `${String(fechaArg.getDate()).padStart(2, "0")}-${String(fechaArg.getMonth() + 1).padStart(2, "0")}-${fechaArg.getFullYear()}`,
+    fechaString: `${fechaArg.getFullYear()}-${String(
+      fechaArg.getMonth() + 1
+    ).padStart(2, "0")}-${String(fechaArg.getDate()).padStart(2, "0")}`,
     hora: fechaArg.getHours(),
   };
 };
@@ -49,8 +51,18 @@ router.get("/disponibles", async (req, res) => {
       return res.json([]);
     }
 
-    const [dd, mm, yyyy] = fecha.split("-");
-    const fechaBusqueda = new Date(Date.UTC(yyyy, mm - 1, dd, 12, 0, 0));
+    const fechaObj = new Date(fecha);
+
+    const fechaBusqueda = new Date(
+      Date.UTC(
+        fechaObj.getFullYear(),
+        fechaObj.getMonth(),
+        fechaObj.getDate(),
+        12,
+        0,
+        0
+      )
+    );
 
     if (fechaBusqueda.getUTCDay() === 0) {
       return res.json([]);
@@ -132,8 +144,7 @@ router.post("/", autenticarToken, async (req, res) => {
       }
     }
 
-    const [dd, mm, yyyy] = fecha.split("-");
-    const fechaObj = new Date(Date.UTC(yyyy, mm - 1, dd));
+    const fechaObj = new Date(fecha);
 
     const fechaGuardar = new Date(
       Date.UTC(
@@ -258,8 +269,7 @@ router.post("/bloquear", autenticarToken, async (req, res) => {
       return res.status(400).json({ mensaje: "Faltan datos para bloquear horario" });
     }
 
-    const [dd, mm, yyyy] = fecha.split("-");
-    const fechaObj = new Date(Date.UTC(yyyy, mm - 1, dd));
+    const fechaObj = new Date(fecha);
 
     const fechaGuardar = new Date(
       Date.UTC(

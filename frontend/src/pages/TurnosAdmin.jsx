@@ -133,7 +133,7 @@ const TurnosAdmin = () => {
 
     try {
       const payload = {
-        fecha: turnoEnProceso.fecha,
+        fecha: turnoEnProceso.fecha + "T12:00:00",
         hora: turnoEnProceso.hora,
         bloqueado: esBloqueo,
         nombreClienteManual: esBloqueo ? motivoBloqueo : null,
@@ -227,11 +227,13 @@ const TurnosAdmin = () => {
                 {!turno ? (
                   <span className="text-muted">+ Disponible</span>
                 ) : turno.bloqueado ? (
-                  <span className="text-danger">⛔ {turno.nombreCliente}</span>
+                  <span className="text-danger">⛔ {turno.nombreClienteManual}</span>
                 ) : (
                   <>
                     <div className="client-name">
-                      {turno.cliente?.nombres} {turno.cliente?.apellidos}
+                      {turno.cliente
+                        ? `${turno.cliente.nombres} ${turno.cliente.apellidos}`
+                        : turno.nombreClienteManual || "Cliente"}
                     </div>
                     <div className="service-name">{turno.servicio?.name}</div>
                     <button

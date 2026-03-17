@@ -38,10 +38,7 @@ const Turnos = () => {
   const fetchDisponibles = async (fecha) => {
     if (!fecha) return;
     try {
-      const [yyyy, mm, dd] = fecha.split("-");
-      const res = await api.get(
-        `/turnos/disponibles?fecha=${dd}-${mm}-${yyyy}`,
-      );
+      const res = await api.get(`/turnos/disponibles?fecha=${fecha}`);
       setHorasDisponibles(res.data);
     } catch (err) {
       console.error("Error cargando horarios:", err);
