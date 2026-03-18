@@ -68,15 +68,19 @@ const Nav = () => {
               to={
                 usuario.rol === "admin" || usuario.rol === "profesional"
                   ? "/admin"
-                  : "/usuario/mis-turnos"
+                  : "/usuario"
               }
               className="nav-btn panel-btn"
             >
               {usuario.rol === "admin" || usuario.rol === "profesional"
                 ? "GESTIÓN"
-                : "MIS TURNOS"}
+                : "AGENDA"}
             </Link>
-
+            {usuario.rol === "usuario" && (
+              <Link to="/usuario/mis-turnos" className="nav-btn panel-btn">
+                MIS TURNOS
+              </Link>
+            )}
             <button className="nav-btn logout-btn" onClick={handleLogout}>
               SALIR
             </button>

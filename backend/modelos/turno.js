@@ -28,6 +28,8 @@ const turnoSchema = new Schema(
 );
 
 // ahora el turno único es por profesional
-turnoSchema.index({ fecha: 1, hora: 1, profesional: 1 }, { unique: true });
-
+turnoSchema.index(
+  { fecha: 1, hora: 1, profesional: 1 },
+  { unique: true, partialFilterExpression: { estado: { $ne: "cancelado" } } }
+);
 module.exports = mongoose.model("Turno", turnoSchema, "turnos");

@@ -176,7 +176,7 @@ router.post("/", autenticarToken, async (req, res) => {
     const profesionalDisponible = profesionales.find(
       (p) => !profesionalesOcupados.includes(p._id.toString()),
     );
-
+    console.log("PROFESIONAL ELEGIDO:", profesionalDisponible);
     if (!profesionalDisponible) {
       return res.status(409).json({ mensaje: "No hay profesionales disponibles." });
     }
@@ -244,7 +244,7 @@ router.patch("/cancelar/:id", autenticarToken, async (req, res) => {
 
     // Solo el cliente dueño del turno o un admin puede cancelarlo
     if (req.usuario.rol === "usuario") {
-      if (turno.cliente?.toString() !== req.usuario.id) {
+      if (turno.cliente?.toString() !== req.usuario.id?.toString()) {
         return res.status(403).json({ mensaje: "No autorizado para cancelar este turno" });
       }
     }
