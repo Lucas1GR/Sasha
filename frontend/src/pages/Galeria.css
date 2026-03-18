@@ -1,150 +1,95 @@
-/* --- CONTENEDOR PRINCIPAL --- */
-.galeria-container {
-  min-height: 100vh;
-  background-color: #fdfdfd; /* Fondo claro y limpio */
-  position: relative;
-  overflow-x: hidden;
-  padding: 60px 20px;
-  color: #333;
-  padding-top: 120px;
-}
-
-/* Luz suave rosada de fondo */
-.spotlight-sasha {
-  position: absolute;
-  top: -10%;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100%;
-  height: 500px;
-  background: radial-gradient(
-    circle,
-    rgba(173, 20, 87, 0.05) 0%,
-    rgba(255, 255, 255, 0) 70%
-  );
-  pointer-events: none;
-  z-index: 0;
-}
-
-/* --- TÍTULOS --- */
-.galeria-header {
+/* CONTENEDOR */
+.historia-container {
+  padding: 80px 20px;
+  background: linear-gradient(to bottom, #fff0f5, #ffffff);
   text-align: center;
-  margin-bottom: 60px;
-  position: relative;
-  z-index: 1;
 }
 
-.galeria-title {
+/* TITULOS */
+.historia-title {
+  font-size: 2rem;
   color: #ad1457;
-  font-weight: 800;
-  font-size: 3rem;
-  text-transform: uppercase;
-  letter-spacing: 2px;
   margin-bottom: 10px;
 }
 
-.galeria-subtitle {
-  font-size: 0.9rem;
-  color: #888;
-  font-weight: 400;
-  text-transform: uppercase;
-  letter-spacing: 4px;
+.historia-subtitle {
+  color: #777;
+  margin-bottom: 20px;
 }
 
-.title-underline-sasha {
-  width: 60px;
-  height: 3px;
-  background: #ad1457;
-  margin: 15px auto;
-  border-radius: 5px;
+/* TEXTO */
+.historia-texto {
+  max-width: 700px;
+  margin: auto;
+  color: #555;
+  line-height: 1.7;
+  margin-bottom: 50px;
 }
 
-/* --- GRILLA --- */
-.galeria-grid {
+/* GALERIA */
+.historia-galeria {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 30px;
-  max-width: 1200px;
-  margin: 0 auto;
-  position: relative;
-  z-index: 1;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 70px;
+  max-width: 400px;
+  margin: 0 auto 50px;
 }
 
-/* --- TARJETA DE FOTO --- */
-.foto-card-sasha {
-  background: white;
-  padding: 10px;
+/* contenedor */
+.foto-box {
   border-radius: 20px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-  border: 1px solid #f0f0f0;
-}
-
-.foto-card-sasha:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 20px 40px rgba(173, 20, 87, 0.1);
-  border-color: #fce4ec;
-}
-
-.foto-frame-sasha {
-  width: 100%;
-  height: 380px;
   overflow: hidden;
-  border-radius: 15px;
-  position: relative;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
 }
 
-.foto-img-sasha {
+/* imagen */
+.foto-box img {
   width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.6s ease;
+  height: auto;
+  display: block;
+  object-fit: contain;
+  transition: 0.4s;
 }
 
-.foto-card-sasha:hover .foto-img-sasha {
-  transform: scale(1.08);
+.foto-box img:hover {
+  transform: scale(1.03);
 }
 
-/* --- INFO --- */
-.foto-info-sasha {
-  padding: 15px 5px;
-  text-align: center;
+/* BOTON */
+.historia-btn-container {
+  margin-top: 20px;
 }
 
-.foto-titulo-sasha {
-  color: #444;
+.btn-sasha-primary {
+  background: linear-gradient(135deg, #ad1457, #f06292);
+  border: none;
+  color: white;
+  padding: 14px 28px;
+  border-radius: 50px;
   font-weight: 600;
-  font-size: 1.1rem;
-  margin: 0;
-  transition: color 0.3s ease;
+  cursor: pointer;
+  transition: 0.3s;
+  box-shadow: 0 10px 25px rgba(240, 98, 146, 0.4);
+  font-size: 1rem;
 }
 
-.foto-card-sasha:hover .foto-titulo-sasha {
-  color: #ad1457;
+.btn-sasha-primary:hover {
+  transform: translateY(-3px);
 }
 
-/* Estado vacío */
-.empty-state {
-  grid-column: 1 / -1;
-  text-align: center;
-  color: #999;
-  padding: 100px;
-  border: 2px dashed #eee;
-  border-radius: 30px;
-}
-
-/* Animaciones */
-.fade-in-down {
-  animation: fadeInDown 0.8s ease-out;
-}
+/* ANIMACIONES */
 .fade-in-up {
-  animation: fadeInUp 0.8s ease-out 0.2s backwards;
+  animation: fadeInUp 0.8s ease;
 }
 
-@keyframes fadeInDown {
+.fade-in-down {
+  animation: fadeInDown 0.8s ease;
+}
+
+@keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(-20px);
+    transform: translateY(30px);
   }
   to {
     opacity: 1;
@@ -152,10 +97,10 @@
   }
 }
 
-@keyframes fadeInUp {
+@keyframes fadeInDown {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(-30px);
   }
   to {
     opacity: 1;
