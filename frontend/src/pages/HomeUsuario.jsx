@@ -20,6 +20,7 @@ const HomeUsuario = () => {
 
       setServicios(resServicios.data);
       setTurnos(resTurnos.data);
+      console.log("TURNOS FRONT:", resTurnos.data);
     } catch (error) {
       console.error("Error cargando datos:", error);
     }

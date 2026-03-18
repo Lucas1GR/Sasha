@@ -19,7 +19,7 @@ const Login = () => {
       // Petición al backend
       const res = await api.post("/login", { email, password });
 
-      login(res.data.usuario, res.data.token);
+      
 
       await Swal.fire({
         title: "¡Bienvenida!",
@@ -28,6 +28,7 @@ const Login = () => {
         timer: 2000,
         showConfirmButton: false,
       });
+    login(res.data.usuario, res.data.token);
 
       // Redirigir según el rol
       const userRole = res.data.usuario.rol;

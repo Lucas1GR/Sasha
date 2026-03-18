@@ -78,6 +78,40 @@ const Turnos = () => {
       Swal.fire("Error", "No se pudo agendar el turno", "error");
     }
   };
+  const cancelarTurno = async (id) => {
+      try {
+        const confirm = await Swal.fire({
+          title: "¿Cancelar turno?",
+          text: "Esta acción no se puede deshacer",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#d33",
+          cancelButtonColor: "#aaa",
+          confirmButtonText: "Sí, cancelar",
+        });
+
+        if (!confirm.isConfirmed) return;
+
+        await api.patch(`/turnos/cancelar/${id}`);
+
+        Swal.fire("Cancelado", "Tu turno fue cancelado", "success");
+
+        fetchTurnos();
+      } catch (error) {
+        console.error(error);
+        Swal.fire("Error", "No se pudo cancelar el turno", "error");
+      }
+    };
+    
+    const puedeCancelar = (fecha, hora) => {
+      const turnoFecha = new Date(fecha);
+      turnoFecha.setHours(parseInt(hora), 0, 0, 0);
+
+      const ahora = new Date();
+      const diffHoras = (turnoFecha - ahora) / (1000 * 60 * 60);
+
+      return diffHoras > 24;
+    };
 
   return (
     <div className="admin-container fade-in">
@@ -122,10 +156,28 @@ const Turnos = () => {
                       day: "numeric",
                     })}
                   </p>
+                  <p className="mb-1">
+                    👩‍⚕️ Profesional: {t.profesional?.nombres} {t.profesional?.apellidos}
+                  </p>
                   {t.bloqueado && (
                     <p className="text-danger mb-0">⛔ Bloqueado: {t.motivo}</p>
                   )}
                 </div>
+              </div>
+              {/* 👇 BOTÓN CANCELAR */}
+              <div className="mt-2 text-end">
+                {puedeCancelar(t.fecha, t.hora) ? (
+                  <button
+                    className="btn btn-sm btn-outline-danger"
+                    onClick={() => cancelarTurno(t._id)}
+                  >
+                    Cancelar turno
+                  </button>
+                ) : (
+                  <small className="text-muted">
+                    No se puede cancelar (menos de 24hs)
+                  </small>
+                )}    
               </div>
             </div>
           ))
