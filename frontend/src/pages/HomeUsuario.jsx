@@ -78,11 +78,16 @@ const HomeUsuario = () => {
           <p>No tenés turnos agendados todavía.</p>
         ) : (
           turnos.map((turno) => (
+            
             <div key={turno._id} className="col-md-6 col-lg-4 mb-4">
               <div className="sasha-card-beauty">
                 <h4>{turno.servicio?.nombre}</h4>
                 <p>Fecha: {new Date(turno.fecha).toLocaleDateString()}</p>
                 <p>Hora: {turno.hora}:00</p>
+                <p>
+                  Profesional: {turno.profesional?.nombres}{" "}
+                  {turno.profesional?.apellidos}
+                </p>
               </div>
             </div>
           ))
