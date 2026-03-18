@@ -224,6 +224,7 @@ router.get("/mis-turnos", autenticarToken, async (req, res) => {
       estado: { $ne: "cancelado" },
     })
       .populate("servicio", "name price")
+      .populate("profesional", "nombres apellidos")
       .sort({ fecha: -1 });
     res.json(turnos);
   } catch (error) {
@@ -242,11 +243,10 @@ router.patch("/cancelar/:id", autenticarToken, async (req, res) => {
     }
 
     // Solo el cliente dueño del turno o un admin puede cancelarlo
-    if (
-      turno.cliente?.toString() !== req.usuario.id &&
-      req.usuario.rol !== "admin"
-    ) {
-      return res.status(403).json({ mensaje: "No autorizado para cancelar este turno" });
+    if (req.usuario.rol === "usuario") {
+      if (turno.cliente?.toString() !== req.usuario.id) {
+        return res.status(403).json({ mensaje: "No autorizado para cancelar este turno" });
+      }
     }
 
     turno.estado = "cancelado";
