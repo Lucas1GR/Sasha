@@ -229,30 +229,75 @@ const TurnosAdmin = () => {
             <div
               key={hora}
               className={`turno-card-sasha ${!turno ? "libre" : turno.bloqueado ? "bloqueado" : "ocupado"}`}
-              onClick={!turno ? () => clickTurnoLibre(hora) : null}
+              onClick={() => clickTurnoLibre(hora)}
             >
               <div className="hora-label">{hora}:00 hs</div>
               <div className="content-label">
-                {!turno ? (
-                  <span className="text-muted">+ Disponible</span>
-                ) : turno.bloqueado ? (
-                  <span className="text-danger">⛔ {turno.nombreClienteManual}</span>
-                ) : (
-                  <>
-                    <div className="client-name">
-                      {turno.cliente
-                        ? `${turno.cliente.nombres} ${turno.cliente.apellidos}`
-                        : turno.nombreClienteManual || "Cliente"}
-                    </div>
-                    <div className="service-name">{turno.servicio?.name}</div>
-                    <button
-                      className="btn-cancel-mini"
-                      onClick={() => handleCancelarTurno(turno._id)}
-                    >
-                      ×
-                    </button>
-                  </>
-                )}
+                {(() => {
+                  const turnosEnHora = todosLosTurnos.filter(
+                    (t) =>
+                      t.fecha.split("T")[0] === fechaSeleccionada &&
+                      t.hora === hora
+                  );
+
+                  if (turnosEnHora.length === 0) {
+                    return <span className="text-muted">+ Disponible</span>;
+                    
+                  }
+
+                  return turnosEnHora.map((t) =>
+                    t.bloqueado ? (
+                      <span key={t._id} className="text-danger">
+                        ⛔ {t.nombreClienteManual}
+                      </span>
+                    ) : (
+                      <div
+                        key={t._id}
+                        style={{
+                          position: "relative",
+                          marginTop: "10px",
+                          paddingTop: "10px",
+                          borderTop: "1px solid rgba(255,255,255,0.3)"
+                        }}
+                      >
+                        <div className="client-name">
+                          {t.cliente
+                            ? `${t.cliente.nombres} ${t.cliente.apellidos}`
+                            : t.nombreClienteManual || "Cliente"}
+                        </div>
+
+                        <div className="service-name">
+                          {t.servicio?.name}
+                        </div>
+                        <div className="profesional-name">
+                          {t.profesional
+                          ? `${t.profesional.nombres} ${t.profesional.apellidos}`
+                          : "Profesional"}
+                        </div>        
+                        <button
+                          className="btn-cancel-mini"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleCancelarTurno(t._id);
+                          }}
+                          style={{
+                            marginTop: "4px",
+                            background: "#fff",
+                            color: "#ad1457",
+                            border: "none",
+                            borderRadius: "50%",
+                            width: "20px",
+                            height: "20px",
+                            cursor: "pointer",
+                            fontWeight: "bold"
+                          }}
+                        >
+                          ×
+                        </button>
+                      </div>
+                    )
+                  );
+                })()}
               </div>
             </div>
           );
