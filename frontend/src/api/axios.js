@@ -24,5 +24,21 @@ api.interceptors.request.use(
     return Promise.reject(error);
   },
 );
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 403) {
+      console.log("⚠️ Token expirado o inválido");
+
+      // Limpia el token viejo
+      localStorage.clear();
+
+      // Redirige al login
+      window.location.href = "/login";
+    }
+
+    return Promise.reject(error);
+  }
+);
 
 export default api;
