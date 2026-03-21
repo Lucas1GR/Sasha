@@ -5,7 +5,6 @@ import "./Home.css";
 const Home = () => {
   const navigate = useNavigate();
 
-  // 🔥 arranca TODO cerrado
   const [openSection, setOpenSection] = useState(null);
 
   const toggleSection = (section) => {
