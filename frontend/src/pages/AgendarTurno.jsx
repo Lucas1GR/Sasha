@@ -134,8 +134,6 @@ const AgendarTurno = () => {
         fecha,
         hora,
         servicio: servicioSeleccionado,
-        // 👇 cliente NO se manda más
-        // el backend lo toma del token automáticamente
       });
 
       await Swal.fire({

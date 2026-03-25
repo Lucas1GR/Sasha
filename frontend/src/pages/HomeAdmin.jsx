@@ -62,15 +62,6 @@ const HomeAdmin = () => {
               <h3>Servicios</h3>
               <p>Precios y tratamientos</p>
             </div>
-
-            <div
-              className="admin-card-btn"
-              onClick={() => navigate("/admin/galeria")}
-            >
-              <div className="icon-wrap">✨</div>
-              <h3>Portfolio</h3>
-              <p>Actualizar fotos de trabajos</p>
-            </div>
           </>
         )}
       </div>

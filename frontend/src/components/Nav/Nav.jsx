@@ -43,10 +43,6 @@ const Nav = () => {
       </div>
 
       <div className="nav-right">
-        <Link to="/galeria" className="nav-link-galeria">
-          📷 GALERÍA
-        </Link>
-
         {!usuario ? (
           <Link to="/login" className="nav-btn login-btn">
             INICIAR SESIÓN
@@ -62,7 +58,9 @@ const Nav = () => {
                 ✨
               </span>
             </div>
-
+            <Link to="/galeria" className="nav-link-galeria">
+              NOSOTROS
+            </Link>
             {/* Botón dinámico según Rol */}
             <Link
               to={
