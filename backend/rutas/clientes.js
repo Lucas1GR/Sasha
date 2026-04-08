@@ -1,3 +1,4 @@
+const bcrypt = require("bcrypt");
 const express = require("express");
 const router = express.Router();
 const Usuario = require("../modelos/usuario");
@@ -78,6 +79,12 @@ router.post(
   async (req, res) => {
     try {
       const { email, dni } = req.body;
+      // Generar password automática
+      const ultimos4Dni = dni ? dni.slice(-4) : "0000";
+      const passwordGenerada = "estetica" + ultimos4Dni;
+
+      // Hashear password
+      const hashedPassword = await bcrypt.hash(passwordGenerada, 10);
       const existe = await Usuario.findOne({ $or: [{ email }, { dni }] });
       if (existe)
         return res
@@ -86,12 +93,14 @@ router.post(
 
       const nuevo = await Usuario.create({
         ...req.body,
-        password: "password_provisorio_123", // Sasha puede setear esto después
+        password: hashedPassword,
         rol: "usuario",
       });
-      res
-        .status(201)
-        .json({ mensaje: "Cliente creado con éxito", cliente: nuevo });
+      res.status(201).json({
+        mensaje: "Cliente creado con éxito",
+        cliente: nuevo,
+        passwordGenerada,
+      });
     } catch (error) {
       res.status(500).json({ mensaje: "Error al crear" });
     }

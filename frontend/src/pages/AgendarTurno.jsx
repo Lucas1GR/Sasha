@@ -101,9 +101,8 @@ const AgendarTurno = () => {
       setCargandoHoras(true);
 
       try {
-        const [yyyy, mm, dd] = fecha.split("-");
         const res = await api.get(
-          `/turnos/disponibles?fecha=${dd}-${mm}-${yyyy}`,
+          `/turnos/disponibles?fecha=${fecha}`,
         );
         setHorasDisponibles(res.data);
       } catch {
