@@ -62,9 +62,14 @@ const GestionClientes = () => {
           background: "#1e1e1e",
           color: "#fff",
         });
-      await api.post("/clientes", nuevoDueno);
+      const res = await api.post("/clientes", nuevoDueno);
+
       Swal.fire({
-        title: "¡Creado!",
+        title: "¡Cliente creado!",
+        html: `
+          <p><b>Email:</b> ${nuevoDueno.email}</p>
+          <p><b>Contraseña:</b> ${res.data.passwordGenerada}</p>
+        `,
         icon: "success",
         background: "#1e1e1e",
         color: "#fff",

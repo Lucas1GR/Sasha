@@ -1,3 +1,4 @@
+const bcrypt = require("bcryptjs");
 const Usuario = require("../modelos/usuario");
 
 // 📌 CREAR CLIENTA (Manual por el Admin)
@@ -25,6 +26,10 @@ const crearClienteManual = async (req, res) => {
         .json({ message: "Ya existe una clienta con ese email o DNI" });
     }
 
+    // Generar password automática basada en DNI
+    const ultimos4Dni = dni ? dni.slice(-4) : "0000";
+    const passwordGenerada = "estetica" + ultimos4Dni;
+    const hashedPassword = await bcrypt.hash(passwordGenerada, 10);
     // 2. Crear nueva clienta
     // Nota: Como es manual, le asignamos un password genérico o nulo si no se va a loguear
     const nuevoCliente = new Usuario({
@@ -36,7 +41,7 @@ const crearClienteManual = async (req, res) => {
       email,
       tipoDePiel: tipoDePiel || "No especificado",
       alergias: alergias || "Ninguna",
-      password: "password_provisorio_123", // Luego ella puede resetearlo
+      password: hashedPassword, // Luego ella puede resetearlo
       rol: "usuario",
     });
 
