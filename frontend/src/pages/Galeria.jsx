@@ -1,10 +1,7 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
 import "./Galeria.css";
 
 const Galeria = () => {
-  const navigate = useNavigate();
-
   return (
     <div className="historia-container">
       {/* 🌸 HISTORIA */}
