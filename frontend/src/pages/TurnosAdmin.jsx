@@ -5,6 +5,10 @@ import { Modal, Button, Form } from "react-bootstrap";
 import Swal from "sweetalert2";
 import "./TurnosAdmin.css";
 
+const formatearFechaLocal = (fechaISO) => {
+  const fecha = new Date(fechaISO);
+  return fecha.toLocaleDateString("en-CA"); // YYYY-MM-DD
+};
 const TurnosAdmin = () => {
   const { usuario } = useAuth();
 
@@ -41,20 +45,20 @@ const TurnosAdmin = () => {
   ];
 
   const cargarDatos = async () => {
-  try {
-    const [resTurnos, resClientes, resServicios] = await Promise.all([
-      api.get("/turnos/agenda-completa"),
-      api.get("/clientes"),
-      api.get("/products"),
-    ]);
+    try {
+      const [resTurnos, resClientes, resServicios] = await Promise.all([
+        api.get("/turnos/agenda-completa"),
+        api.get("/clientes"),
+        api.get("/products"),
+      ]);
 
-    setTodosLosTurnos(resTurnos.data);
-    setListaClientes(resClientes.data);
-    setListaFichas(resServicios.data);
-  } catch (error) {
-    console.error("Error al cargar agenda:", error);
-  }
-};
+      setTodosLosTurnos(resTurnos.data);
+      setListaClientes(resClientes.data);
+      setListaFichas(resServicios.data);
+    } catch (error) {
+      console.error("Error al cargar agenda:", error);
+    }
+  };
 
   useEffect(() => {
     cargarDatos();
@@ -86,7 +90,7 @@ const TurnosAdmin = () => {
     const promesas = [];
     HORARIOS_LABORALES.forEach((hora) => {
       const ocupado = todosLosTurnos.find((t) => {
-        const fechaTurno = t.fecha.split("T")[0];
+        const fechaTurno = formatearFechaLocal(t.fecha);
         return fechaTurno === fechaSeleccionada && t.hora === hora;
       });
 
@@ -164,7 +168,56 @@ const TurnosAdmin = () => {
       });
     }
   };
+  const desbloquearTurno = async (turno) => {
+    const confirm = await Swal.fire({
+      title: "¿Desbloquear este horario?",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Sí, desbloquear",
+    });
 
+    if (!confirm.isConfirmed) return;
+
+    try {
+      await api.delete("/turnos/desbloquear", {
+        data: {
+          fecha: turno.fecha,
+          hora: turno.hora,
+          profesionalId: turno.profesional._id,
+        },
+      });
+
+      Swal.fire("Listo", "Horario desbloqueado", "success");
+
+      cargarDatos(); // 🔄 refresca la agenda
+    } catch (error) {
+      Swal.fire("Error", "No se pudo desbloquear", "error");
+    }
+  };
+  const handleDesbloquearDia = async () => {
+    const confirm = await Swal.fire({
+      title: "¿Abrir agenda del día?",
+      text: "Se eliminarán todos los bloqueos del día",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Sí, desbloquear todo",
+    });
+
+    if (!confirm.isConfirmed) return;
+
+    try {
+      await api.delete("/turnos/desbloquear-dia", {
+        data: {
+          fecha: fechaSeleccionada + "T12:00:00",
+        },
+      });
+
+      Swal.fire("Día habilitado", "", "success");
+      cargarDatos();
+    } catch (error) {
+      Swal.fire("Error", "No se pudo desbloquear el día", "error");
+    }
+  };
   const handleCancelarTurno = async (id) => {
     const result = await Swal.fire({
       title: "¿Cancelar este turno?",
@@ -188,7 +241,8 @@ const TurnosAdmin = () => {
 
   const turnosDelDia = HORARIOS_LABORALES.map((hora) => {
     return todosLosTurnos.find(
-      (t) => t.fecha.split("T")[0] === fechaSeleccionada && t.hora === hora,
+      (t) =>
+        formatearFechaLocal(t.fecha) === fechaSeleccionada && t.hora === hora,
     );
   });
 
@@ -202,14 +256,24 @@ const TurnosAdmin = () => {
           </p>
         </div>
         {usuario?.rol === "admin" && (
-        <Button
-          variant="outline-danger"
-          className="btn-sasha-outline"
-          onClick={handleBloquearDia}
-        >
-          🔒 Cerrar Día Completo
-        </Button>
-      )}
+          <>
+            <Button
+              variant="outline-danger"
+              className="btn-sasha-outline"
+              onClick={handleBloquearDia}
+            >
+              🔒 Cerrar Día Completo
+            </Button>
+
+            <Button
+              variant="outline-success"
+              className="btn-sasha-outline"
+              onClick={handleDesbloquearDia}
+            >
+              🔓 Abrir Día Completo
+            </Button>
+          </>
+        )}
       </div>
 
       <div className="filtros-agenda mb-4">
@@ -236,20 +300,43 @@ const TurnosAdmin = () => {
                 {(() => {
                   const turnosEnHora = todosLosTurnos.filter(
                     (t) =>
-                      t.fecha.split("T")[0] === fechaSeleccionada &&
-                      t.hora === hora
+                      formatearFechaLocal(t.fecha) === fechaSeleccionada &&
+                      t.hora === hora,
                   );
 
                   if (turnosEnHora.length === 0) {
                     return <span className="text-muted">+ Disponible</span>;
-                    
                   }
 
                   return turnosEnHora.map((t) =>
                     t.bloqueado ? (
-                      <span key={t._id} className="text-danger">
-                        ⛔ {t.nombreClienteManual}
-                      </span>
+                      <div key={t._id} style={{ marginTop: "8px" }}>
+                        <span className="text-danger">
+                          ⛔ {t.nombreClienteManual}
+                        </span>
+
+                        {usuario?.rol === "admin" && (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              desbloquearTurno(t);
+                            }}
+                            style={{
+                              marginLeft: "8px",
+                              background: "#fff",
+                              color: "#28a745",
+                              border: "none",
+                              borderRadius: "50%",
+                              width: "20px",
+                              height: "20px",
+                              cursor: "pointer",
+                              fontWeight: "bold",
+                            }}
+                          >
+                            ✓
+                          </button>
+                        )}
+                      </div>
                     ) : (
                       <div
                         key={t._id}
@@ -257,7 +344,7 @@ const TurnosAdmin = () => {
                           position: "relative",
                           marginTop: "10px",
                           paddingTop: "10px",
-                          borderTop: "1px solid rgba(255,255,255,0.3)"
+                          borderTop: "1px solid rgba(255,255,255,0.3)",
                         }}
                       >
                         <div className="client-name">
@@ -266,14 +353,12 @@ const TurnosAdmin = () => {
                             : t.nombreClienteManual || "Cliente"}
                         </div>
 
-                        <div className="service-name">
-                          {t.servicio?.name}
-                        </div>
+                        <div className="service-name">{t.servicio?.name}</div>
                         <div className="profesional-name">
                           {t.profesional
-                          ? `${t.profesional.nombres} ${t.profesional.apellidos}`
-                          : "Profesional"}
-                        </div>        
+                            ? `${t.profesional.nombres} ${t.profesional.apellidos}`
+                            : "Profesional"}
+                        </div>
                         <button
                           className="btn-cancel-mini"
                           onClick={(e) => {
@@ -289,13 +374,13 @@ const TurnosAdmin = () => {
                             width: "20px",
                             height: "20px",
                             cursor: "pointer",
-                            fontWeight: "bold"
+                            fontWeight: "bold",
                           }}
                         >
                           ×
                         </button>
                       </div>
-                    )
+                    ),
                   );
                 })()}
               </div>

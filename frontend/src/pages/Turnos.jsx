@@ -36,16 +36,6 @@ const Turnos = () => {
     }
   };
 
-  const fetchDisponibles = async (fecha) => {
-    if (!fecha) return;
-    try {
-      const res = await api.get(`/turnos/disponibles?fecha=${fecha}`);
-      setHorasDisponibles(res.data);
-    } catch (err) {
-      console.error("Error cargando horarios:", err);
-    }
-  };
-
   useEffect(() => {
     if (usuario?._id) {
       fetchTurnos();
@@ -53,9 +43,45 @@ const Turnos = () => {
     }
   }, [usuario]);
 
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-    if (e.target.name === "fecha") fetchDisponibles(e.target.value);
+  // ✅ HANDLE CHANGE (todo el control de disponibilidad queda acá)
+  const handleChange = async (e) => {
+    const { name, value } = e.target;
+
+    setForm((prev) => ({ ...prev, [name]: value }));
+
+    if (name === "fecha") {
+      // limpiar hora al cambiar fecha
+      setForm((prev) => ({ ...prev, hora: "" }));
+
+      try {
+        const res = await api.get(`/turnos/disponibles?fecha=${value}`);
+
+        // ❌ día bloqueado o sin disponibilidad
+        if (!res.data || res.data.length === 0) {
+          Swal.fire({
+            title: "Día no disponible",
+            text: "Este día está cerrado o sin turnos 💔",
+            icon: "warning",
+            confirmButtonColor: "#ad1457",
+          });
+
+          setForm((prev) => ({ ...prev, fecha: "", hora: "" }));
+          setHorasDisponibles([]);
+          return;
+        }
+
+        // ✅ horarios disponibles
+        setHorasDisponibles(res.data);
+      } catch (err) {
+        console.error("Error cargando horarios:", err);
+
+        Swal.fire({
+          title: "Error",
+          text: "No se pudieron cargar los horarios",
+          icon: "error",
+        });
+      }
+    }
   };
 
   const handleSubmit = async () => {
@@ -65,20 +91,24 @@ const Turnos = () => {
 
     try {
       await api.post("/turnos", form);
+
       Swal.fire({
         title: "¡Turno Reservado!",
         text: "Te esperamos para brillar",
         icon: "success",
         confirmButtonColor: "#ad1457",
       });
+
       setForm({ servicio: "", fecha: "", hora: "" });
       setIsModalOpen(false);
       fetchTurnos();
     } catch (err) {
-      console.error(err); // Esto quita el subrayado rojo
+      console.error(err);
+
       Swal.fire("Error", "No se pudo agendar el turno", "error");
     }
   };
+
   const cancelarTurno = async (id) => {
     try {
       const confirm = await Swal.fire({
@@ -166,13 +196,8 @@ const Turnos = () => {
                       <p>
                         👩‍⚕️ {t.profesional?.nombres} {t.profesional?.apellidos}
                       </p>
-
-                      {t.bloqueado && (
-                        <p className="turno-bloqueado">⛔ {t.motivo}</p>
-                      )}
                     </div>
 
-                    {/*BOTÓN CANCELAR */}
                     <div className="mt-2 text-end">
                       {puedeCancelar(t.fecha, t.hora) ? (
                         <button
@@ -251,4 +276,5 @@ const Turnos = () => {
     </div>
   );
 };
+
 export default Turnos;
