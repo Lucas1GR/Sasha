@@ -11,6 +11,7 @@ const Turnos = () => {
   const [horasDisponibles, setHorasDisponibles] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [servicios, setServicios] = useState([]);
+  const [fechasBloqueadas, setFechasBloqueadas] = useState([]);
 
   const [form, setForm] = useState({
     servicio: "",
@@ -35,11 +36,21 @@ const Turnos = () => {
       console.error("Error cargando turnos:", err);
     }
   };
+  const fetchFechasBloqueadas = async () => {
+    try {
+      const res = await api.get("/turnos/feriados");
 
+      // 👉 por ahora usamos feriados
+      setFechasBloqueadas(res.data.feriados || []);
+    } catch (err) {
+      console.error("Error cargando fechas bloqueadas:", err);
+    }
+  };
   useEffect(() => {
     if (usuario?._id) {
       fetchTurnos();
       fetchServicios();
+      fetchFechasBloqueadas();
     }
   }, [usuario]);
 
@@ -86,7 +97,15 @@ const Turnos = () => {
 
   const handleSubmit = async () => {
     if (!form.servicio || !form.fecha || !form.hora) {
-      return Swal.fire("Atención", "Completa todos los datos", "warning");
+      // 🔥 cerrar modal primero
+      setIsModalOpen(false);
+
+      return Swal.fire({
+        title: "Faltan datos",
+        text: "Por favor completá todos los campos 😊",
+        icon: "warning",
+        confirmButtonColor: "#ad1457",
+      });
     }
 
     try {
@@ -105,7 +124,15 @@ const Turnos = () => {
     } catch (err) {
       console.error(err);
 
-      Swal.fire("Error", "No se pudo agendar el turno", "error");
+      // 🔥 cerrar modal primero
+      setIsModalOpen(false);
+
+      Swal.fire({
+        title: "Horario no disponible",
+        text: "Ese turno ya no está disponible o el día está cerrado 💔",
+        icon: "error",
+        confirmButtonColor: "#ad1457",
+      });
     }
   };
 
@@ -249,7 +276,23 @@ const Turnos = () => {
                 name="fecha"
                 className="modal-input"
                 value={form.fecha}
-                onChange={handleChange}
+                onChange={(e) => {
+                  const fecha = e.target.value;
+
+                  // ❌ si está bloqueado
+                  if (fechasBloqueadas.includes(fecha)) {
+                    Swal.fire({
+                      title: "Día no disponible",
+                      text: "Este día está bloqueado 💔",
+                      icon: "warning",
+                    });
+                    setForm((prev) => ({ ...prev, fecha: "", hora: "" }));
+                    setHorasDisponibles([]);
+                    return;
+                  }
+
+                  handleChange(e);
+                }}
               />
             </div>
 
