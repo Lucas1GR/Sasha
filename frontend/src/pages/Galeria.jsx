@@ -11,7 +11,7 @@ const Galeria = () => {
       <div className="historia-header fade-in-down">
         <h2 className="historia-title">Nuestra Historia</h2>
         <p className="historia-subtitle">
-          Un espacio pensado para tu bienestar ✨
+          Un espacio pensado para tu bienestar
         </p>
         <div className="title-underline-sasha"></div>
       </div>
@@ -27,7 +27,7 @@ const Galeria = () => {
           profesionalismo, calidez y los mejores tratamientos.
         </p>
 
-        <p>Cada momento de autocuidado es una inversión en vos 💖</p>
+        <p>Cada momento de autocuidado es una inversión en vos </p>
       </div>
 
       {/* 📸 FOTOS */}
@@ -45,9 +45,14 @@ const Galeria = () => {
       <div className="historia-btn-container">
         <button
           className="btn-sasha-primary"
-          onClick={() => navigate("/usuario/mis-turnos")}
+          onClick={() =>
+            window.open(
+              "https://www.google.com/maps/place/Rodney+4891,+B1757DCY+Gregorio+de+Laferrere,+Provincia+de+Buenos+Aires/@-34.7434522,-58.604947,19z",
+              "_blank",
+            )
+          }
         >
-          ✨ Quiero conocerlos
+          Quiero conocer el estudio
         </button>
       </div>
     </div>

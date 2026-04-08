@@ -54,10 +54,9 @@ const Home = () => {
 
             {openSection === "faciales" && (
               <div className="service-content">
-                <p>✨ Punta de diamante</p>
-                <p>✨ Limpieza profunda</p>
-                <p>✨ Dermaplaning</p>
-                <p>✨ Alta frecuencia</p>
+                <p>Limpieza profunda</p>
+                <p>Dermaplaning</p>
+                <p>Peeling químico</p>
               </div>
             )}
           </div>
@@ -76,9 +75,9 @@ const Home = () => {
 
             {openSection === "corporales" && (
               <div className="service-content">
-                <p>💆‍♀️ Masajes relajantes</p>
-                <p>💧 Drenaje linfático</p>
-                <p>🔥 Reducción</p>
+                <p>Masajes relajantes</p>
+                <p>Drenaje linfático</p>
+                <p>Masajes Descontracturantes</p>
               </div>
             )}
           </div>
@@ -97,9 +96,9 @@ const Home = () => {
 
             {openSection === "pestanias" && (
               <div className="service-content">
-                <p>👁️ Lifting</p>
-                <p>✨ Extensiones</p>
-                <p>🎯 Perfilado</p>
+                <p>Lifting de pestañas</p>
+                <p>Extensión de pestañas pxp</p>
+                <p>Perfilado</p>
               </div>
             )}
           </div>

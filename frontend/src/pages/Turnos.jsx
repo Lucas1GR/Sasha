@@ -80,39 +80,39 @@ const Turnos = () => {
     }
   };
   const cancelarTurno = async (id) => {
-      try {
-        const confirm = await Swal.fire({
-          title: "¿Cancelar turno?",
-          text: "Esta acción no se puede deshacer",
-          icon: "warning",
-          showCancelButton: true,
-          confirmButtonColor: "#d33",
-          cancelButtonColor: "#aaa",
-          confirmButtonText: "Sí, cancelar",
-        });
+    try {
+      const confirm = await Swal.fire({
+        title: "¿Cancelar turno?",
+        text: "Esta acción no se puede deshacer",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#aaa",
+        confirmButtonText: "Sí, cancelar",
+      });
 
-        if (!confirm.isConfirmed) return;
+      if (!confirm.isConfirmed) return;
 
-        await api.patch(`/turnos/cancelar/${id}`);
+      await api.patch(`/turnos/cancelar/${id}`);
 
-        Swal.fire("Cancelado", "Tu turno fue cancelado", "success");
+      Swal.fire("Cancelado", "Tu turno fue cancelado", "success");
 
-        fetchTurnos();
-      } catch (error) {
-        console.error(error);
-        Swal.fire("Error", "No se pudo cancelar el turno", "error");
-      }
-    };
-    
-    const puedeCancelar = (fecha, hora) => {
-      const turnoFecha = new Date(fecha);
-      turnoFecha.setHours(parseInt(hora), 0, 0, 0);
+      fetchTurnos();
+    } catch (error) {
+      console.error(error);
+      Swal.fire("Error", "No se pudo cancelar el turno", "error");
+    }
+  };
 
-      const ahora = new Date();
-      const diffHoras = (turnoFecha - ahora) / (1000 * 60 * 60);
+  const puedeCancelar = (fecha, hora) => {
+    const turnoFecha = new Date(fecha);
+    turnoFecha.setHours(parseInt(hora), 0, 0, 0);
 
-      return diffHoras > 24;
-    };
+    const ahora = new Date();
+    const diffHoras = (turnoFecha - ahora) / (1000 * 60 * 60);
+
+    return diffHoras > 24;
+  };
 
   return (
     <div className="turnos-page">
@@ -130,7 +130,7 @@ const Turnos = () => {
               className="btn-sasha-primary"
               onClick={() => setIsModalOpen(true)}
             >
-              ✨ Nueva Reserva
+              Nueva Reserva
             </button>
           </div>
 
@@ -164,8 +164,7 @@ const Turnos = () => {
                       </p>
 
                       <p>
-                        👩‍⚕️ {t.profesional?.nombres}{" "}
-                        {t.profesional?.apellidos}
+                        👩‍⚕️ {t.profesional?.nombres} {t.profesional?.apellidos}
                       </p>
 
                       {t.bloqueado && (

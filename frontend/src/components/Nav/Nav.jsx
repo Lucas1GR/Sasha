@@ -55,7 +55,7 @@ const Nav = () => {
                 Hola, <span>
                   {usuario.nombres?.split(" ")[0] || "Bella"}
                 </span>{" "}
-                ✨
+                🌸
               </span>
             </div>
             <Link to="/galeria" className="nav-link-galeria">

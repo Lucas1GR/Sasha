@@ -40,7 +40,7 @@ const HomeUsuario = () => {
       </div>
 
       {/* SERVICIOS */}
-      <h3 className="section-title-sasha mb-4">✨ Servicios disponibles</h3>
+      <h3 className="section-title-sasha mb-4"> Servicios disponibles</h3>
 
       <div className="row mb-5">
         {servicios.map((servicio) => (
@@ -72,14 +72,13 @@ const HomeUsuario = () => {
       </div>
 
       {/* TURNOS */}
-      <h3 className="section-title-sasha mb-4">📅 Mis próximos turnos</h3>
+      <h3 className="section-title-sasha mb-4">Mis próximos turnos</h3>
 
       <div className="row">
         {turnos.length === 0 ? (
           <p>No tenés turnos agendados todavía.</p>
         ) : (
           turnos.map((turno) => (
-            
             <div key={turno._id} className="col-md-6 col-lg-4 mb-4">
               <div className="sasha-card-beauty">
                 <h4>{turno.servicio?.nombre}</h4>
@@ -99,3 +98,4 @@ const HomeUsuario = () => {
 };
 
 export default HomeUsuario;
+  

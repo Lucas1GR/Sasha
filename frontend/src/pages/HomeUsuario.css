@@ -1,56 +1,98 @@
+body {
+  background: linear-gradient(180deg, #f8f8f9 0%, #f5f5f7 60%, #fdf2f5 100%);
+}
+
+/* CONTENEDOR */
 .user-container {
   padding: 3rem 1rem;
   max-width: 1100px;
   margin: 0 auto;
 }
 
+/* HEADER */
 .user-badge {
   background: #ad1457;
   color: white;
-  padding: 4px 12px;
+  padding: 5px 14px;
   border-radius: 50px;
   font-size: 0.7rem;
   font-weight: 700;
+  letter-spacing: 1px;
 }
 
 .user-title {
-  font-size: 2.2rem;
+  font-size: 2.4rem;
   font-weight: 800;
-  color: #333;
+  color: #222;
   margin-top: 0.5rem;
 }
 
+.user-welcome-header p {
+  color: #666;
+  margin-top: 5px;
+}
+
+/* 🔥 TITULOS SECCIONES */
+.section-title-sasha {
+  color: #ad1457;
+  font-weight: 800;
+  font-size: 1.5rem;
+}
+
+/* 🔥 CARDS PRO */
 .sasha-card-beauty {
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(252, 228, 236, 0.5);
+  /*background: rgba(255, 255, 255, 0.85);*/
+  background: #ffffff; 
+  backdrop-filter: blur(12px);
+   border: 1px solid #eee;
+ /* border: 1px solid rgba(252, 228, 236, 0.7);*/
   border-radius: 20px;
   padding: 25px;
   transition: all 0.3s ease;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.02);
+  box-shadow: 0 8px 25px rgba(173, 20, 87, 0.08);
 }
 
+/* HOVER MÁS LINDO */
 .sasha-card-beauty:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 25px rgba(173, 20, 87, 0.08);
+  transform: translateY(-6px);
+  box-shadow: 0 15px 35px rgba(173, 20, 87, 0.15);
 }
 
-.btn-sasha-glow {
-  background: #ad1457;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 50px;
-  font-weight: 600;
-  box-shadow: 0 4px 15px rgba(173, 20, 87, 0.3);
+/* TEXTOS */
+.service-name {
+  font-weight: 700;
+  color: #222;
 }
 
-.btn-turno-sasha {
-  background: #fce4ec;
+.service-description {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.price-sasha {
+  font-weight: 700;
   color: #ad1457;
+}
+
+/* 🔥 BOTÓN AGENDAR */
+.btn-turno-sasha {
+  background: linear-gradient(135deg, #ad1457, #f06292);
+  color: white;
   border: none;
   padding: 8px 15px;
   border-radius: 12px;
   font-weight: 700;
   font-size: 0.9rem;
+  transition: all 0.3s;
+}
+
+.btn-turno-sasha:hover {
+  transform: scale(1.05);
+  box-shadow: 0 5px 15px rgba(173, 20, 87, 0.3);
+}
+
+/* TURNOS */
+.sasha-card-beauty p {
+  margin: 5px 0;
+  color: #444;
 }
