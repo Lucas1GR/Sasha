@@ -58,9 +58,11 @@ const Nav = () => {
                 🌸
               </span>
             </div>
-            <Link to="/galeria" className="nav-link-galeria">
-              NOSOTROS
-            </Link>
+            {usuario.rol === "usuario" && (
+              <Link to="/galeria" className="nav-link-galeria">
+                NOSOTROS
+              </Link>
+            )}
             {/* Botón dinámico según Rol */}
             <Link
               to={
