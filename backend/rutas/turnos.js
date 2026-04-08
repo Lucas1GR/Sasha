@@ -30,7 +30,7 @@ const getTiempoArgentina = () => {
   const fechaArg = new Date(utc + 3600000 * offsetArgentina);
   return {
     fechaString: `${fechaArg.getFullYear()}-${String(
-      fechaArg.getMonth() + 1
+      fechaArg.getMonth() + 1,
     ).padStart(2, "0")}-${String(fechaArg.getDate()).padStart(2, "0")}`,
     hora: fechaArg.getHours(),
   };
@@ -60,8 +60,8 @@ router.get("/disponibles", async (req, res) => {
         fechaObj.getDate(),
         12,
         0,
-        0
-      )
+        0,
+      ),
     );
 
     if (fechaBusqueda.getUTCDay() === 0) {
@@ -97,9 +97,13 @@ router.get("/disponibles", async (req, res) => {
     let disponibles = [];
 
     for (const hora of horarios) {
-      const turnosEnHora = turnosDelDia.filter(
-        (t) => t.hora === hora && !t.bloqueado
-      );
+      const turnosEnHora = turnosDelDia.filter((t) => t.hora === hora);
+
+      const hayBloqueo = turnosEnHora.some((t) => t.bloqueado);
+
+      if (hayBloqueo) {
+        continue; // no mostrar ese horario
+      }
 
       if (turnosEnHora.length < totalProfesionales) {
         disponibles.push(hora);
@@ -170,7 +174,9 @@ router.post("/", autenticarToken, async (req, res) => {
     });
 
     // ids de profesionales ocupados
-    const profesionalesOcupados = ocupados.map((t) => t.profesional?.toString());
+    const profesionalesOcupados = ocupados.map((t) =>
+      t.profesional?.toString(),
+    );
 
     // buscar profesional libre
     const profesionalDisponible = profesionales.find(
@@ -178,7 +184,9 @@ router.post("/", autenticarToken, async (req, res) => {
     );
     console.log("PROFESIONAL ELEGIDO:", profesionalDisponible);
     if (!profesionalDisponible) {
-      return res.status(409).json({ mensaje: "No hay profesionales disponibles." });
+      return res
+        .status(409)
+        .json({ mensaje: "No hay profesionales disponibles." });
     }
 
     const nuevoTurno = new Turno({
@@ -245,7 +253,9 @@ router.patch("/cancelar/:id", autenticarToken, async (req, res) => {
     // Solo el cliente dueño del turno o un admin puede cancelarlo
     if (req.usuario.rol === "usuario") {
       if (turno.cliente?.toString() !== req.usuario.id?.toString()) {
-        return res.status(403).json({ mensaje: "No autorizado para cancelar este turno" });
+        return res
+          .status(403)
+          .json({ mensaje: "No autorizado para cancelar este turno" });
       }
     }
 
@@ -263,13 +273,17 @@ router.patch("/cancelar/:id", autenticarToken, async (req, res) => {
 router.post("/bloquear", autenticarToken, async (req, res) => {
   try {
     if (req.usuario.rol !== "admin") {
-      return res.status(403).json({ mensaje: "Solo el admin puede bloquear horarios" });
+      return res
+        .status(403)
+        .json({ mensaje: "Solo el admin puede bloquear horarios" });
     }
 
     const { fecha, hora, profesionalId } = req.body;
 
     if (!fecha || !hora || !profesionalId) {
-      return res.status(400).json({ mensaje: "Faltan datos para bloquear horario" });
+      return res
+        .status(400)
+        .json({ mensaje: "Faltan datos para bloquear horario" });
     }
 
     const fechaObj = new Date(fecha);
@@ -281,8 +295,8 @@ router.post("/bloquear", autenticarToken, async (req, res) => {
         fechaObj.getUTCDate(),
         12,
         0,
-        0
-      )
+        0,
+      ),
     );
 
     const turnoExistente = await Turno.findOne({
@@ -313,7 +327,93 @@ router.post("/bloquear", autenticarToken, async (req, res) => {
     res.status(500).json({ mensaje: "Error al bloquear horario" });
   }
 });
+// 🔓 DESBLOQUEAR HORARIO (admin)
+router.delete("/desbloquear", autenticarToken, async (req, res) => {
+  try {
+    if (req.usuario.rol !== "admin") {
+      return res
+        .status(403)
+        .json({ mensaje: "Solo el admin puede desbloquear horarios" });
+    }
 
+    const { fecha, hora, profesionalId } = req.body;
+
+    if (!fecha || !hora || !profesionalId) {
+      return res.status(400).json({ mensaje: "Faltan datos para desbloquear" });
+    }
+
+    const fechaObj = new Date(fecha);
+
+    const fechaBuscar = new Date(
+      Date.UTC(
+        fechaObj.getUTCFullYear(),
+        fechaObj.getUTCMonth(),
+        fechaObj.getUTCDate(),
+        12,
+        0,
+        0,
+      ),
+    );
+
+    const turno = await Turno.findOne({
+      fecha: fechaBuscar,
+      hora,
+      profesional: profesionalId,
+      bloqueado: true,
+    });
+
+    if (!turno) {
+      return res.status(404).json({ mensaje: "No hay bloqueo en ese horario" });
+    }
+
+    await turno.deleteOne();
+
+    res.json({ mensaje: "Horario desbloqueado correctamente" });
+  } catch (error) {
+    console.error("ERROR DESBLOQUEANDO:", error);
+    res.status(500).json({ mensaje: "Error al desbloquear" });
+  }
+});
+// 🔓 DESBLOQUEAR DÍA COMPLETO (admin)
+router.delete("/desbloquear-dia", autenticarToken, async (req, res) => {
+  try {
+    if (req.usuario.rol !== "admin") {
+      return res
+        .status(403)
+        .json({ mensaje: "Solo el admin puede desbloquear el día" });
+    }
+
+    const { fecha } = req.body;
+
+    if (!fecha) {
+      return res.status(400).json({ mensaje: "Fecha requerida" });
+    }
+
+    const fechaObj = new Date(fecha);
+
+    const fechaBuscar = new Date(
+      Date.UTC(
+        fechaObj.getUTCFullYear(),
+        fechaObj.getUTCMonth(),
+        fechaObj.getUTCDate(),
+        12,
+        0,
+        0,
+      ),
+    );
+
+    // elimina TODOS los bloqueos de ese día
+    await Turno.deleteMany({
+      fecha: fechaBuscar,
+      bloqueado: true,
+    });
+
+    res.json({ mensaje: "Día desbloqueado correctamente" });
+  } catch (error) {
+    console.error("ERROR DESBLOQUEANDO DÍA:", error);
+    res.status(500).json({ mensaje: "Error al desbloquear día" });
+  }
+});
 // Agenda completa (admin)
 router.get("/agenda-completa", autenticarToken, async (req, res) => {
   try {
