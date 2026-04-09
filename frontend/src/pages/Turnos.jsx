@@ -1,12 +1,15 @@
 import { useState, useEffect } from "react";
-import api from "../api/axios";
 import { useAuth } from "../context/AuthContext";
 import Modal from "./Modal";
 import Swal from "sweetalert2";
 import "./Turnos.css";
+import { useLocation } from "react-router-dom";
+import api from "../api/axios";
 
 const Turnos = () => {
   const { usuario } = useAuth();
+  const location = useLocation();
+
   const [turnos, setTurnos] = useState([]);
   const [horasDisponibles, setHorasDisponibles] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -18,6 +21,17 @@ const Turnos = () => {
     fecha: "",
     hora: "",
   });
+
+  // 🔥 ESTE ES EL FIX IMPORTANTE
+  useEffect(() => {
+    if (location.state?.servicioId) {
+      setIsModalOpen(true);
+      setForm((prev) => ({
+        ...prev,
+        servicio: location.state.servicioId,
+      }));
+    }
+  }, [location.state]);
 
   const fetchServicios = async () => {
     try {
@@ -36,16 +50,16 @@ const Turnos = () => {
       console.error("Error cargando turnos:", err);
     }
   };
+
   const fetchFechasBloqueadas = async () => {
     try {
       const res = await api.get("/turnos/feriados");
-
-      // 👉 por ahora usamos feriados
       setFechasBloqueadas(res.data.feriados || []);
     } catch (err) {
       console.error("Error cargando fechas bloqueadas:", err);
     }
   };
+
   useEffect(() => {
     if (usuario?._id) {
       fetchTurnos();
@@ -54,20 +68,17 @@ const Turnos = () => {
     }
   }, [usuario]);
 
-  // ✅ HANDLE CHANGE (todo el control de disponibilidad queda acá)
   const handleChange = async (e) => {
     const { name, value } = e.target;
 
     setForm((prev) => ({ ...prev, [name]: value }));
 
     if (name === "fecha") {
-      // limpiar hora al cambiar fecha
       setForm((prev) => ({ ...prev, hora: "" }));
 
       try {
         const res = await api.get(`/turnos/disponibles?fecha=${value}`);
 
-        // ❌ día bloqueado o sin disponibilidad
         if (!res.data || res.data.length === 0) {
           Swal.fire({
             title: "Día no disponible",
@@ -81,7 +92,6 @@ const Turnos = () => {
           return;
         }
 
-        // ✅ horarios disponibles
         setHorasDisponibles(res.data);
       } catch (err) {
         console.error("Error cargando horarios:", err);
@@ -97,7 +107,6 @@ const Turnos = () => {
 
   const handleSubmit = async () => {
     if (!form.servicio || !form.fecha || !form.hora) {
-      // 🔥 cerrar modal primero
       setIsModalOpen(false);
 
       return Swal.fire({
@@ -124,7 +133,6 @@ const Turnos = () => {
     } catch (err) {
       console.error(err);
 
-      // 🔥 cerrar modal primero
       setIsModalOpen(false);
 
       Swal.fire({
@@ -276,23 +284,7 @@ const Turnos = () => {
                 name="fecha"
                 className="modal-input"
                 value={form.fecha}
-                onChange={(e) => {
-                  const fecha = e.target.value;
-
-                  // ❌ si está bloqueado
-                  if (fechasBloqueadas.includes(fecha)) {
-                    Swal.fire({
-                      title: "Día no disponible",
-                      text: "Este día está bloqueado 💔",
-                      icon: "warning",
-                    });
-                    setForm((prev) => ({ ...prev, fecha: "", hora: "" }));
-                    setHorasDisponibles([]);
-                    return;
-                  }
-
-                  handleChange(e);
-                }}
+                onChange={handleChange}
               />
             </div>
 

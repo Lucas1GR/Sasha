@@ -14,13 +14,15 @@ const HomeUsuario = () => {
   const cargarDatos = async () => {
     try {
       const [resServicios, resTurnos] = await Promise.all([
-        api.get("/products"), // servicios del backend
-        api.get("/turnos/mis-turnos"), // turnos de la clienta logueada
+        api.get("/products"), // 👈 verificar después si esto es correcto
+        api.get("/turnos/mis-turnos"),
       ]);
+
+      console.log("SERVICIOS:", resServicios.data); // 👈 para debug
+      console.log("TURNOS:", resTurnos.data);
 
       setServicios(resServicios.data);
       setTurnos(resTurnos.data);
-      console.log("TURNOS FRONT:", resTurnos.data);
     } catch (error) {
       console.error("Error cargando datos:", error);
     }
@@ -46,22 +48,39 @@ const HomeUsuario = () => {
         {servicios.map((servicio) => (
           <div key={servicio._id} className="col-md-6 col-lg-4 mb-4">
             <div className="sasha-card-beauty">
-              <h4 className="service-name">{servicio.nombre}</h4>
+              {/* 👇 IMAGEN (si existe) */}
+              {servicio.image && (
+                <img
+                  src={servicio.image}
+                  alt={servicio.name}
+                  className="img-fluid mb-2"
+                />
+              )}
+
+              {/* 👇 ACÁ ESTABA EL ERROR */}
+              <h4 className="service-name">{servicio.name}</h4>
 
               <p className="small text-muted">
-                {servicio.categoria || "Estética"}
+                {servicio.category || "Estética"}
               </p>
 
               <p className="service-description">
-                {servicio.descripcion || "Sin descripción"}
+                {servicio.description || "Sin descripción"}
               </p>
 
               <div className="d-flex justify-content-between mt-3">
-                <span className="price-sasha">${servicio.precio}</span>
+                <span className="price-sasha">${servicio.price}</span>
 
                 <button
                   className="btn-turno-sasha"
-                  onClick={() => navigate(`/agendar/${servicio._id}`)}
+                  onClick={() =>
+                    navigate("/usuario/mis-turnos", {
+                      state: {
+                        servicioId: servicio._id,
+                        servicioNombre: servicio.name,
+                      },
+                    })
+                  }
                 >
                   📅 Agendar
                 </button>
@@ -98,4 +117,3 @@ const HomeUsuario = () => {
 };
 
 export default HomeUsuario;
-  
