@@ -44,7 +44,7 @@ const Home = () => {
           <div className="col-md-4">
             <div
               className="service-box"
-              style={{ backgroundImage: "url('/cosmetologia.jpg')" }}
+              style={{ backgroundImage: "url('cosmetologia.jpg')" }}
               onClick={() => toggleSection("faciales")}
             >
               <div className="overlay">
@@ -65,7 +65,7 @@ const Home = () => {
           <div className="col-md-4">
             <div
               className="service-box"
-              style={{ backgroundImage: "url('/relajante.jpg')" }}
+              style={{ backgroundImage: "url('relajante.jpg')" }}
               onClick={() => toggleSection("corporales")}
             >
               <div className="overlay">
@@ -86,7 +86,7 @@ const Home = () => {
           <div className="col-md-4">
             <div
               className="service-box"
-              style={{ backgroundImage: "url('/pestañas.jpg')" }}
+              style={{ backgroundImage: "url('pestañas.jpg')" }}
               onClick={() => toggleSection("pestanias")}
             >
               <div className="overlay">

@@ -29,7 +29,7 @@ const Nav = () => {
       <div className="nav-left">
         <Link to="/" className="nav-logo">
           <img
-           src="/SB-logo.png"
+           src="SB-logo.png"
             alt="Estética Sasha"
             className="nav-logo-img"
             onError={(e) => {

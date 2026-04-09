@@ -34,7 +34,7 @@ const Galeria = () => {
         </div>
 
         <div className="foto-box">
-         <img src="/gabinete.jpg" alt="gabinete" />
+         <img src="gabinete.jpg" alt="gabinete" />
         </div>
       </div>
 
