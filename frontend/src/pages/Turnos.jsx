@@ -80,17 +80,19 @@ const Turnos = () => {
         const res = await api.get(`/turnos/disponibles?fecha=${value}`);
 
         if (!res.data || res.data.length === 0) {
-          Swal.fire({
-            title: "Día no disponible",
-            text: "Este día está cerrado o sin turnos 💔",
-            icon: "warning",
-            confirmButtonColor: "#ad1457",
-          });
+  setIsModalOpen(false); // 👈 CERRÁS EL MODAL
 
-          setForm((prev) => ({ ...prev, fecha: "", hora: "" }));
-          setHorasDisponibles([]);
-          return;
-        }
+  Swal.fire({
+    title: "Día no disponible",
+    text: "Este día está cerrado o sin turnos 💔",
+    icon: "warning",
+    confirmButtonColor: "#ad1457",
+  });
+
+  setForm((prev) => ({ ...prev, fecha: "", hora: "" }));
+  setHorasDisponibles([]);
+  return;
+}
 
         setHorasDisponibles(res.data);
       } catch (err) {
