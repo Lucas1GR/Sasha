@@ -12,10 +12,9 @@ router.get(
   async (req, res) => {
     try {
       // Filtramos para que NO traiga a los clientes comunes, solo a los que tienen roles de admin o staff
-      const staff = await Usuario.find(
-        { rol: { $ne: "usuario" } },
-        "nombres apellidos email rol",
-      );
+      const staff = await Usuario.find({
+        rol: { $ne: "usuario" },
+      });
       res.json(staff);
     } catch (error) {
       console.error(error);

@@ -15,13 +15,13 @@ const EmpleadosList = () => {
     dni: "",
     email: "",
     telefono: "",
-    puesto: "Masajista",
+    direccion: "",
   });
 
   const cargarEmpleados = async () => {
     try {
       const res = await api.get("/usuarios");
-      setEmpleados(res.data.filter((u) => u.rol === "empleado" || u.puesto));
+      setEmpleados(res.data.filter((u) => u.rol === "profesional"));
     } catch (error) {
       console.error("Error al cargar staff", error);
     }
@@ -41,7 +41,7 @@ const EmpleadosList = () => {
         dni: emp.dni || "",
         email: emp.email || "",
         telefono: emp.telefono || "",
-        puesto: emp.puesto || "Masajista",
+        direccion: emp.direccion || "",
       });
     } else {
       setEditando(false);
@@ -51,35 +51,62 @@ const EmpleadosList = () => {
         dni: "",
         email: "",
         telefono: "",
-        puesto: "Masajista",
+        direccion: "",
+
       });
     }
     setShowModal(true);
   };
 
   const handleGuardar = async () => {
+    if (
+      !formData.nombres ||
+      !formData.apellidos ||
+      !formData.email ||
+      !formData.telefono ||
+      !formData.direccion
+    ) {
+      return Swal.fire({
+        title: "Faltan datos",
+        text: "Completa nombre, apellido, email, teléfono y dirección",
+        icon: "warning",
+      });
+    }
     try {
       if (editando) {
-        await api.put(`/usuarios/${empleadoEditarId}`, formData);
+        await api.put(`/profesionales/${empleadoEditarId}`, formData);
       } else {
-        await api.post("/usuarios", { ...formData, rol: "empleado" });
-      }
+        const res = await api.post("/profesionales", formData);
+
       Swal.fire({
-        title: "¡Staff Actualizado!",
+        title: "Profesional creado",
+        html: `Contraseña: <b>${res.data.passwordGenerada}</b>`,
         icon: "success",
         confirmButtonColor: "#ad1457",
       });
+    }
       setShowModal(false);
+
+      setFormData({
+        nombres: "",
+        apellidos: "",
+        dni: "",
+        email: "",
+        telefono: "",
+        direccion: "",
+      });
+
       cargarEmpleados();
+
     } catch (err) {
-      console.error("Detalle del error al guardar:", err);
+      console.error("ERROR COMPLETO:", err.response?.data || err);
       Swal.fire({
         title: "Error",
-        text: "No se pudo guardar la información",
+        text: err.response?.data?.message || "Error al guardar",
         icon: "error",
         confirmButtonColor: "#ad1457",
       });
-    } // <--- ESTA ERA LA LLAVE QUE FALTABA
+    } 
   };
 
   return (
@@ -89,7 +116,7 @@ const EmpleadosList = () => {
           <h2 style={{ color: "#ad1457", fontWeight: "bold" }}>
             Staff de Sasha
           </h2>
-          <p className="text-muted">Masajistas y Manicuras</p>
+          <p className="text-muted">Profesionales del centro</p>
         </div>
         <Button
           style={{ backgroundColor: "#ad1457", border: "none" }}
@@ -104,8 +131,9 @@ const EmpleadosList = () => {
           <thead style={{ backgroundColor: "#fce4ec" }}>
             <tr>
               <th>NOMBRE</th>
-              <th>ESPECIALIDAD</th>
+              <th>DNI</th>
               <th>CONTACTO</th>
+              <th>DIRECCIÓN</th>
               <th>ACCIONES</th>
             </tr>
           </thead>
@@ -122,12 +150,9 @@ const EmpleadosList = () => {
                   <td className="fw-bold">
                     {emp.nombres} {emp.apellidos}
                   </td>
-                  <td>
-                    <span className="badge bg-info text-dark">
-                      {emp.puesto}
-                    </span>
-                  </td>
-                  <td>{emp.telefono}</td>
+                  <td>{emp.dni || "-"}</td>
+                  <td>{emp.telefono || "-"}</td>
+                  <td>{emp.direccion || "-"}</td>
                   <td>
                     <Button
                       variant="outline-primary"
@@ -137,7 +162,23 @@ const EmpleadosList = () => {
                     >
                       ✏️
                     </Button>
-                    <Button variant="outline-danger" size="sm">
+                    <Button
+                      variant="outline-danger"
+                      size="sm"
+                      onClick={async () => {
+                        const confirm = await Swal.fire({
+                          title: "¿Eliminar profesional?",
+                          icon: "warning",
+                          showCancelButton: true,
+                          confirmButtonText: "Sí",
+                        });
+
+                        if (confirm.isConfirmed) {
+                          await api.delete(`/profesionales/${emp._id}`);
+                          cargarEmpleados();
+                        }
+                      }}
+                    >
                       🗑️
                     </Button>
                   </td>
@@ -156,19 +197,6 @@ const EmpleadosList = () => {
         </Modal.Header>
         <Modal.Body>
           <Form>
-            <Form.Group className="mb-3">
-              <Form.Label>Especialidad</Form.Label>
-              <Form.Select
-                value={formData.puesto}
-                onChange={(e) =>
-                  setFormData({ ...formData, puesto: e.target.value })
-                }
-              >
-                <option value="Masajista">Masajista</option>
-                <option value="Manicura">Manicura</option>
-                <option value="Estilista">Estilista</option>
-              </Form.Select>
-            </Form.Group>
             <div className="row">
               <div className="col-6 mb-3">
                 <Form.Label>Nombre</Form.Label>
@@ -179,6 +207,7 @@ const EmpleadosList = () => {
                   }
                 />
               </div>
+
               <div className="col-6 mb-3">
                 <Form.Label>Apellido</Form.Label>
                 <Form.Control
@@ -189,12 +218,43 @@ const EmpleadosList = () => {
                 />
               </div>
             </div>
+
             <Form.Group className="mb-3">
-              <Form.Label>Teléfono de contacto</Form.Label>
+              <Form.Label>Email</Form.Label>
+              <Form.Control
+                value={formData.email}
+                onChange={(e) =>
+                  setFormData({ ...formData, email: e.target.value })
+                }
+              />
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label>DNI</Form.Label>
+              <Form.Control
+                value={formData.dni}
+                onChange={(e) =>
+                  setFormData({ ...formData, dni: e.target.value })
+                }
+              />
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label>Teléfono</Form.Label>
               <Form.Control
                 value={formData.telefono}
                 onChange={(e) =>
                   setFormData({ ...formData, telefono: e.target.value })
+                }
+              />
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label>Dirección</Form.Label>
+              <Form.Control
+                value={formData.direccion}
+                onChange={(e) =>
+                  setFormData({ ...formData, direccion: e.target.value })
                 }
               />
             </Form.Group>

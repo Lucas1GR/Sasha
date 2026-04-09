@@ -8,6 +8,7 @@ const morgan = require("morgan");
 // Configuración
 dotenv.config();
 const app = express();
+const profesionalesRoutes = require("./rutas/profesionales");
 const PORT = process.env.PORT || 3000;
 
 // Middlewares globales
@@ -22,8 +23,9 @@ const rutas = {
   usuarios: require("./rutas/usuarios"),
   turnos: require("./rutas/turnos"),
   fotos: require("./rutas/fotos"),
-  servicios: require("./rutas/servicios"), // 👈 Cambiado para que coincida con tu servicios.js
-  clientes: require("./rutas/clientes"), // 👈 Agregamos clientes que lo veo en tu captura
+  servicios: require("./rutas/servicios"), 
+  clientes: require("./rutas/clientes"),  
+  profesionales: require("./rutas/profesionales"),
 };
 
 // Montaje de rutas
@@ -34,6 +36,7 @@ app.use("/api/turnos", rutas.turnos);
 app.use("/api/fotos", rutas.fotos);
 app.use("/api/products", rutas.servicios); // Mantenemos /products para el front, pero usa servicios.js
 app.use("/api/clientes", rutas.clientes);
+app.use("/api/profesionales", rutas.profesionales);
 
 // Middleware para rutas no encontradas
 app.use((req, res) => {
