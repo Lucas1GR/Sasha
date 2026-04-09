@@ -51,19 +51,14 @@ const Nav = () => {
           <>
             <div className="nav-user-info d-none d-lg-flex">
               <span className="nav-saludo">
-                {/* Ajustamos a 'nombres' que es como viene de tu DB */}
                 Hola, <span>
                   {usuario.nombres?.split(" ")[0] || "Bella"}
                 </span>{" "}
                 🌸
               </span>
             </div>
-            {usuario.rol === "usuario" && (
-              <Link to="/galeria" className="nav-link-galeria">
-                NOSOTROS
-              </Link>
-            )}
-            {/* Botón dinámico según Rol */}
+
+            {/* 🟣 1. SERVICIOS */}
             <Link
               to={
                 usuario.rol === "admin" || usuario.rol === "profesional"
@@ -74,13 +69,36 @@ const Nav = () => {
             >
               {usuario.rol === "admin" || usuario.rol === "profesional"
                 ? "GESTIÓN"
-                : "AGENDA"}
+                : "SERVICIOS"}
             </Link>
+
+            {/* 🟣 2. MIS TURNOS (solo usuario) */}
             {usuario.rol === "usuario" && (
               <Link to="/usuario/mis-turnos" className="nav-btn panel-btn">
                 MIS TURNOS
               </Link>
             )}
+
+            {/* 🟣 3. MI PERFIL */}
+            <Link
+              to={
+                usuario.rol === "admin" || usuario.rol === "profesional"
+                  ? "/admin/perfil"
+                  : "/usuario/perfil"
+              }
+              className="nav-btn panel-btn"
+            >
+              MI PERFIL
+            </Link>
+
+            {/* 🟣 4. NOSOTROS */}
+            {usuario.rol === "usuario" && (
+              <Link to="/galeria" className="nav-link-galeria">
+                NOSOTROS
+              </Link>
+            )}
+
+            {/* 🟣 5. SALIR */}
             <button className="nav-btn logout-btn" onClick={handleLogout}>
               SALIR
             </button>

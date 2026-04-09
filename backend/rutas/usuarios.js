@@ -3,7 +3,12 @@ const router = express.Router();
 const Usuario = require("../modelos/usuario");
 const autenticarToken = require("../middlewares/autorizaciones");
 const verificarRol = require("../middlewares/roles");
-
+const {
+  actualizarMiPerfil,
+  cambiarPassword,
+} = require("../controladores/usuariosController");
+router.put("/perfil", autenticarToken, actualizarMiPerfil);
+router.put("/cambiar-password", autenticarToken, cambiarPassword);
 // GET /api/usuarios -> Solo para que el Admin vea a TODO el staff (Admin Principal y Secundarios)
 router.get(
   "/",
