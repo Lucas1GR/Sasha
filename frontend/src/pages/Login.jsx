@@ -67,7 +67,7 @@ const Login = () => {
 
       <div className="login-card">
         <div className="login-header">
-          <img src="/SB-logo.png" alt="Logo Sasha" className="login-logo-img" />
+          <img src="/SB-logo.png"alt="Logo Sasha" className="login-logo-img" />
           <h2>Bienvenida</h2>
           <p>Ingresa a tu cuenta de Estética Sasha</p>
         </div>

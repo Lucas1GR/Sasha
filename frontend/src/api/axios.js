@@ -2,7 +2,7 @@ import axios from "axios";
 
 const api = axios.create({
   // Eliminamos la URL de render vieja y el punto final
-  baseURL: "http://localhost:3000/api",
+  baseURL: "https://sasha-zame.onrender.com/api",
 });
 
 // Interceptor para enviar el token en cada petición
