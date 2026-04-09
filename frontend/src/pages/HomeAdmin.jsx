@@ -4,13 +4,8 @@ import { useAuth } from "../context/AuthContext";
 import "./HomeAdmin.css";
 
 const HomeAdmin = () => {
-  const { usuario, logout } = useAuth();
+  const { usuario } = useAuth();
   const navigate = useNavigate();
-
-  const handleLogout = () => {
-    logout();
-    navigate("/");
-  };
 
   return (
     <div className="admin-dashboard-container">
@@ -18,7 +13,7 @@ const HomeAdmin = () => {
         <span className="admin-badge">ADMINISTRACIÓN CENTRAL</span>
         <h1 className="admin-welcome-title">
           HOLA,{" "}
-          <span className="text-sasha-pink">{usuario?.nombre || "SASHA"}</span>
+          <span className="text-sasha-pink">{usuario?.nombres || "SASHA"}</span>
         </h1>
         <p className="admin-instruction">
           ¿Qué aspecto del salón vamos a coordinar hoy?
@@ -43,6 +38,7 @@ const HomeAdmin = () => {
           <h3>Agenda</h3>
           <p>Control de turnos diarios</p>
         </div>
+
         {usuario?.rol === "admin" && (
           <>
             <div
@@ -51,7 +47,7 @@ const HomeAdmin = () => {
             >
               <div className="icon-wrap">💄</div>
               <h3>Staff</h3>
-              <p>Gestión de equipo y servicios</p>
+              <p>Perfiles del staff</p>
             </div>
 
             <div
@@ -64,12 +60,6 @@ const HomeAdmin = () => {
             </div>
           </>
         )}
-      </div>
-
-      <div className="logout-section mt-5">
-        <button className="btn-logout-sasha" onClick={handleLogout}>
-          Cerrar Sesión Administrativa
-        </button>
       </div>
     </div>
   );
