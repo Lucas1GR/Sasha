@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import Swal from "sweetalert2";
 import "./Nav.css";
+
 
 const Nav = () => {
   // usuario viene del Contexto. Asegúrate que en AuthContext
@@ -21,8 +23,21 @@ const Nav = () => {
   }, []);
 
   const handleLogout = () => {
-    logout();
-    navigate("/");
+    Swal.fire({
+      title: "¿Estás segura?",
+      text: "Vas a cerrar sesión",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#ad1457",
+      cancelButtonColor: "#aaa",
+      confirmButtonText: "Sí, salir",
+      cancelButtonText: "Cancelar",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        logout();
+        navigate("/");
+      }
+    });
   };
 
   return (
