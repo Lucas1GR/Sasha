@@ -9,6 +9,7 @@ const Nav = () => {
   const { usuario, logout } = useAuth();
   const navigate = useNavigate();
   const [shrink, setShrink] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -29,7 +30,7 @@ const Nav = () => {
       <div className="nav-left">
         <Link to="/" className="nav-logo">
           <img
-           src="SB-logo.png"
+           src="/Sasha/SB-logo.png"
             alt="Estética Sasha"
             className="nav-logo-img"
             onError={(e) => {
@@ -41,10 +42,16 @@ const Nav = () => {
           </span>
         </Link>
       </div>
-
-      <div className="nav-right">
+      <div className="nav-toggle" onClick={() => setMenuOpen(!menuOpen)}>
+        ☰
+      </div>      
+      <div className={`nav-right ${menuOpen ? "open" : ""}`}>
         {!usuario ? (
-          <Link to="/login" className="nav-btn login-btn">
+          <Link 
+            to="/login" 
+            className="nav-btn login-btn"
+            onClick={() => setMenuOpen(false)}
+          >
             INICIAR SESIÓN
           </Link>
         ) : (
@@ -66,6 +73,7 @@ const Nav = () => {
                   : "/usuario"
               }
               className="nav-btn panel-btn"
+              onClick={() => setMenuOpen(false)}
             >
               {usuario.rol === "admin" || usuario.rol === "profesional"
                 ? "GESTIÓN"
@@ -74,7 +82,11 @@ const Nav = () => {
 
             {/* 🟣 2. MIS TURNOS (solo usuario) */}
             {usuario.rol === "usuario" && (
-              <Link to="/usuario/mis-turnos" className="nav-btn panel-btn">
+              <Link 
+                to="/usuario/mis-turnos" 
+                className="nav-btn panel-btn"
+                onClick={() => setMenuOpen(false)}
+              >
                 MIS TURNOS
               </Link>
             )}
@@ -87,13 +99,18 @@ const Nav = () => {
                   : "/usuario/perfil"
               }
               className="nav-btn panel-btn"
+              onClick={() => setMenuOpen(false)}
             >
               MI PERFIL
             </Link>
 
             {/* 🟣 4. NOSOTROS */}
             {usuario.rol === "usuario" && (
-              <Link to="/galeria" className="nav-link-galeria">
+              <Link 
+                to="/galeria" 
+                className="nav-link-galeria"
+                onClick={() => setMenuOpen(false)}
+              >
                 NOSOTROS
               </Link>
             )}
