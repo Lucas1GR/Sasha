@@ -88,24 +88,32 @@ const TurnosAdmin = () => {
     if (!motivo) return;
 
     const promesas = [];
-    HORARIOS_LABORALES.forEach((hora) => {
-      const ocupado = todosLosTurnos.find((t) => {
-        const fechaTurno = formatearFechaLocal(t.fecha);
-        return fechaTurno === fechaSeleccionada && t.hora === hora;
-      });
+    // 🔥 obtener profesionales únicos
+    const profesionalesIds = [
+      ...new Set(todosLosTurnos.map((t) => t.profesional?._id).filter(Boolean)),
+    ];
 
-      if (!ocupado) {
-        promesas.push(
-          api.post("/turnos", {
-            fecha: fechaSeleccionada + "T12:00:00",
-            hora: hora,
-            bloqueado: true,
-            nombreCliente: motivo,
-            mascota: null,
-            dueno: usuario._id,
-          }),
-        );
-      }
+    HORARIOS_LABORALES.forEach((hora) => {
+      profesionalesIds.forEach((profId) => {
+        const ocupado = todosLosTurnos.find((t) => {
+          const fechaTurno = t.fecha.split("T")[0];
+          return (
+            fechaTurno === fechaSeleccionada &&
+            t.hora === hora &&
+            t.profesional?._id === profId
+          );
+        });
+
+        if (!ocupado) {
+          promesas.push(
+            api.post("/turnos/bloquear", {
+              fecha: fechaSeleccionada,
+              hora: hora,
+              profesionalId: profId,
+            }),
+          );
+        }
+      });
     });
 
     try {
