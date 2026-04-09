@@ -28,6 +28,7 @@ import RutasProtegidas from "./routes/RutasProtegidas";
 import Galeria from "./pages/Galeria";
 import GaleriaAdmin from "./pages/GaleriaAdmin";
 import Turnos from "./pages/Turnos";
+import Perfil from "./pages/Perfil";
 
 function App() {
   const { usuario } = useAuth();
@@ -35,7 +36,7 @@ function App() {
   return (
     <Router>
       <Navbar />
-      <div className="main-content">
+      <div className="main-content" style={{ paddingBottom: "80px" }}>
         <Routes>
           {/* --- RUTAS PÚBLICAS --- */}
           <Route path="/" element={<Home />} />
@@ -78,6 +79,7 @@ function App() {
           <Route path="/usuario" element={<RutasProtegidas rol="usuario" />}>
             <Route index element={<HomeUsuario />} />
             <Route path="mis-turnos" element={<Turnos />} />
+            <Route path="perfil" element={<Perfil />} />
           </Route>
           {/* --- PANEL ADMIN (ESTÉTICA SASHA) --- */}
           <Route
@@ -86,6 +88,7 @@ function App() {
           >
             <Route index element={<HomeAdmin />} />
             <Route path="clientes" element={<GestionClientes />} />
+            <Route path="perfil" element={<Perfil />} />
             <Route path="staff" element={<RutasProtegidas rol="admin" />}>
               <Route index element={<EmpleadosList />} />
             </Route>
