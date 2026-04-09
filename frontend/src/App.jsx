@@ -49,7 +49,11 @@ function App() {
                 <Login />
               ) : (
                 <Navigate
-                  to={usuario.rol === "admin" ? "/admin" : "/usuario"}
+                  to={
+                    usuario.rol === "admin" || usuario.rol === "profesional"
+                      ? "/admin"
+                      : "/usuario"
+                  }
                 />
               )
             }
@@ -61,7 +65,11 @@ function App() {
                 <Registro />
               ) : (
                 <Navigate
-                  to={usuario.rol === "admin" ? "/admin" : "/usuario"}
+                  to={
+                    usuario.rol === "admin" || usuario.rol === "profesional"
+                      ? "/admin"
+                      : "/usuario"
+                  }
                 />
               )
             }
@@ -93,7 +101,7 @@ function App() {
             <Route path="servicios" element={<RutasProtegidas rol="admin" />}>
               <Route index element={<AdminPanel />} />
             </Route>
-        </Route>  
+          </Route>
           {/* --- RUTA DE ACCESO RÁPIDO A TURNOS --- */}
           <Route
             path="/agendar"
