@@ -110,3 +110,50 @@
   font-weight: 700;
   color: #333;
 }
+
+/* BOTÓN HAMBURGUESA */
+.nav-toggle {
+  display: none;
+  font-size: 1.8rem;
+  cursor: pointer;
+  color: #ad1457;
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+  .nav-container {
+    padding: 15px 20px;
+  }
+
+  .nav-toggle {
+    display: block;
+  }
+
+  .nav-right {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: white;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    padding: 20px;
+    gap: 15px;
+
+    display: none; /* oculto por defecto */
+  }
+
+  .nav-right.open {
+    display: flex; /* aparece cuando se abre */
+  }
+
+  .nav-btn,
+  .nav-link-galeria {
+    width: 100%;
+    text-align: left;
+  }
+
+  .nav-user-info {
+    display: none;
+  }
+}
