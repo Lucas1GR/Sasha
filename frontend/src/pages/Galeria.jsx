@@ -30,11 +30,11 @@ const Galeria = () => {
       {/* 📸 FOTOS */}
       <div className="historia-galeria fade-in-up">
         <div className="foto-box">
-          <img src="/recepcion.jpg" alt="Recepción" />
+          <img src="recepcion.jpg" alt="Recepción" />
         </div>
 
         <div className="foto-box">
-          <img src="/gabinete.jpg" alt="gabinete" />
+         <img src="/gabinete.jpg" alt="gabinete" />
         </div>
       </div>
 
