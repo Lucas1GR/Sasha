@@ -22,6 +22,8 @@ const Turnos = () => {
     hora: "",
   });
 
+  const [mostrarHistorial, setMostrarHistorial] = useState(false);
+
   // 🔥 ESTE ES EL FIX IMPORTANTE
   useEffect(() => {
     if (location.state?.servicioId) {
@@ -43,13 +45,24 @@ const Turnos = () => {
   };
 
   const fetchTurnos = async () => {
-    try {
-      const res = await api.get("/turnos/mis-turnos");
-      setTurnos(res.data);
-    } catch (err) {
-      console.error("Error cargando turnos:", err);
-    }
-  };
+  try {
+    const res = await api.get("/turnos/mis-turnos");
+
+    const ordenados = res.data.sort((a, b) => {
+      const fechaA = new Date(a.fecha);
+      fechaA.setHours(parseInt(a.hora), 0, 0, 0);
+
+      const fechaB = new Date(b.fecha);
+      fechaB.setHours(parseInt(b.hora), 0, 0, 0);
+
+      return fechaA - fechaB;
+    });
+
+    setTurnos(ordenados);
+  } catch (err) {
+    console.error("Error cargando turnos:", err);
+  }
+};
 
   const fetchFechasBloqueadas = async () => {
     try {
@@ -180,7 +193,20 @@ const Turnos = () => {
 
     return diffHoras > 24;
   };
+  const ahora = new Date();
 
+  const turnosFuturos = turnos.filter((t) => {
+    const fecha = new Date(t.fecha);
+    fecha.setHours(parseInt(t.hora), 0, 0, 0);
+    return fecha >= ahora;
+  });
+
+  const turnosPasados = turnos.filter((t) => {
+    const fecha = new Date(t.fecha);
+    fecha.setHours(parseInt(t.hora), 0, 0, 0);
+    return fecha < ahora;
+  });
+  
   return (
     <div className="turnos-page">
       <div className="turnos-overlay">
@@ -201,47 +227,46 @@ const Turnos = () => {
             </button>
           </div>
 
-          {/* LISTA */}
-          <div className="row">
-            {turnos.length === 0 ? (
-              <div className="col-12 text-center py-5">
-                <p className="empty-text">Aún no tenés turnos agendados 💖</p>
-              </div>
+          {/* PRÓXIMOS TURNOS */}
+          <h4 style={{ color: "white", marginBottom: "10px" }}>
+            Próximos turnos
+          </h4>
+
+          <div className="agenda-container">
+            {turnosFuturos.length === 0 ? (
+              <p className="empty-text">No tenés turnos próximos</p>
             ) : (
-              turnos.map((t) => (
-                <div key={t._id} className="col-md-6 col-lg-4 mb-4">
-                  <div className="turno-card">
-                    <div className="turno-header">
-                      <span className="turno-servicio">
-                        {t.servicio?.name || "Servicio General"}
-                      </span>
+              turnosFuturos.map((t) => {
+                const fechaFormateada = new Date(t.fecha).toLocaleDateString("es-AR", {
+                  weekday: "long",
+                  day: "numeric",
+                  month: "long",
+                });
 
-                      <span className="turno-hora">{t.hora}:00</span>
-                    </div>
+                return (
+                  <div key={t._id} className="agenda-item">
+                    <div className="agenda-fecha">{fechaFormateada}</div>
 
-                    <div className="turno-body">
-                      <p>
-                        📅{" "}
-                        {new Date(t.fecha).toLocaleDateString("es-AR", {
-                          weekday: "long",
-                          year: "numeric",
-                          month: "long",
-                          day: "numeric",
-                        })}
-                      </p>
+                    <div className="agenda-info">
+                      <div className="agenda-header">
+                        <span className="agenda-servicio">
+                          {t.servicio?.name || "Servicio"}
+                        </span>
+                        <span className="agenda-hora">{t.hora}:00 hs</span>
+                      </div>
 
-                      <p>
+                      <div className="agenda-body">
                         👩‍⚕️ {t.profesional?.nombres} {t.profesional?.apellidos}
-                      </p>
+                      </div>
                     </div>
 
-                    <div className="mt-2 text-end">
+                    <div className="agenda-acciones">
                       {puedeCancelar(t.fecha, t.hora) ? (
                         <button
                           className="btn btn-sm btn-outline-danger"
                           onClick={() => cancelarTurno(t._id)}
                         >
-                          Cancelar turno
+                          Cancelar
                         </button>
                       ) : (
                         <small className="text-muted">
@@ -250,8 +275,55 @@ const Turnos = () => {
                       )}
                     </div>
                   </div>
-                </div>
-              ))
+                );
+              })
+            )}
+          </div>
+
+          {/* HISTORIAL (COLAPSABLE) */}
+          <div style={{ marginTop: "30px" }}>
+            <button
+              className="btn btn-outline-light btn-sm"
+              onClick={() => setMostrarHistorial(!mostrarHistorial)}
+            >
+              {mostrarHistorial ? "Ocultar historial ▲" : "Ver historial ▼"}
+            </button>
+
+            {mostrarHistorial && (
+              <div className="agenda-container mt-3">
+                {turnosPasados.length === 0 ? (
+                  <p className="empty-text">Sin historial</p>
+                ) : (
+                  turnosPasados.map((t) => {
+                    const fechaFormateada = new Date(t.fecha).toLocaleDateString("es-AR", {
+                      day: "numeric",
+                      month: "long",
+                      year: "numeric",
+                    });
+
+                    return (
+                      <div key={t._id} className="agenda-item" style={{ opacity: 0.6 }}>
+                        <div className="agenda-fecha">{fechaFormateada}</div>
+
+                        <div className="agenda-info">
+                          <div className="agenda-header">
+                            <span>{t.servicio?.name}</span>
+                            <span>{t.hora}:00 hs</span>
+                          </div>
+
+                          <div className="agenda-body">
+                            👩‍⚕️ {t.profesional?.nombres} {t.profesional?.apellidos}
+                          </div>
+                        </div>
+
+                        <div className="agenda-acciones">
+                          <small>Finalizado</small>
+                        </div>
+                      </div>
+                    );
+                  })
+                )}
+              </div>
             )}
           </div>
 
