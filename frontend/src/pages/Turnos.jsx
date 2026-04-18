@@ -23,6 +23,7 @@ const Turnos = () => {
   });
 
   const [mostrarHistorial, setMostrarHistorial] = useState(false);
+  const [verMasHistorial, setVerMasHistorial] = useState(false);
 
   // 🔥 ESTE ES EL FIX IMPORTANTE
   useEffect(() => {
@@ -195,10 +196,38 @@ const Turnos = () => {
   };
   const ahora = new Date();
 
-  const turnosFuturos = turnos.filter((t) => {
+  const hoy = new Date();
+  hoy.setHours(0, 0, 0, 0);
+
+  const finHoy = new Date(hoy);
+  finHoy.setHours(23, 59, 59, 999);
+
+  const finSemana = new Date(hoy);
+  finSemana.setDate(hoy.getDate() + (7 - hoy.getDay()));
+
+  const finMes = new Date(hoy.getFullYear(), hoy.getMonth() + 1, 0);
+  finMes.setHours(23, 59, 59, 999);
+
+  const turnosHoy = [];
+  const turnosSemana = [];
+  const turnosMes = [];
+  const turnosFuturo = [];
+
+  turnos.forEach((t) => {
     const fecha = new Date(t.fecha);
     fecha.setHours(parseInt(t.hora), 0, 0, 0);
-    return fecha >= ahora;
+
+    if (fecha < ahora) return;
+
+    if (fecha >= hoy && fecha <= finHoy) {
+      turnosHoy.push(t);
+    } else if (fecha > finHoy && fecha <= finSemana) {
+      turnosSemana.push(t);
+    } else if (fecha > finSemana && fecha <= finMes) {
+      turnosMes.push(t);
+    } else {
+      turnosFuturo.push(t);
+    }
   });
 
   const turnosPasados = turnos.filter((t) => {
@@ -206,6 +235,53 @@ const Turnos = () => {
     fecha.setHours(parseInt(t.hora), 0, 0, 0);
     return fecha < ahora;
   });
+  const renderTurno = (t) => {
+  const fechaFormateada = new Date(t.fecha).toLocaleDateString("es-AR", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+  });
+
+  return (
+    <div key={t._id} className="agenda-item">
+
+      <div className="agenda-fecha">
+        {fechaFormateada}
+      </div>
+
+      <div className="agenda-info">
+        <div className="agenda-header">
+          <span className="agenda-servicio">
+            {t.servicio?.name || "Servicio"}
+          </span>
+
+          <span className="agenda-hora">
+            🕒 {t.hora}:00
+          </span>
+        </div>
+
+        <div className="agenda-body">
+          👩‍⚕️ {t.profesional?.nombres} {t.profesional?.apellidos}
+        </div>
+      </div>
+
+      <div className="agenda-acciones">
+        {puedeCancelar(t.fecha, t.hora) ? (
+          <button
+            className="btn btn-sm btn-outline-danger"
+            onClick={() => cancelarTurno(t._id)}
+          >
+            Cancelar
+          </button>
+        ) : (
+          <small className="text-muted">
+            No se puede cancelar (menos de 24hs)
+          </small>
+        )}
+      </div>
+    </div>
+  );
+};
   
   return (
     <div className="turnos-page">
@@ -231,54 +307,53 @@ const Turnos = () => {
           <h4 style={{ color: "white", marginBottom: "10px" }}>
             Próximos turnos
           </h4>
+          {/* HOY */}
+          {turnosHoy.length > 0 && (
+            <>
+              <h5 className="agenda-grupo">Hoy</h5>
+              <div className="agenda-container">
+                {turnosHoy.map((t) => renderTurno(t))}
+              </div>
+            </>
+          )}
 
-          <div className="agenda-container">
-            {turnosFuturos.length === 0 ? (
-              <p className="empty-text">No tenés turnos próximos</p>
-            ) : (
-              turnosFuturos.map((t) => {
-                const fechaFormateada = new Date(t.fecha).toLocaleDateString("es-AR", {
-                  weekday: "long",
-                  day: "numeric",
-                  month: "long",
-                });
+          {/* ESTA SEMANA */}
+          {turnosSemana.length > 0 && (
+            <>
+              <h5 className="agenda-grupo">Esta semana</h5>
+              <div className="agenda-container">
+                {turnosSemana.map((t) => renderTurno(t))}
+              </div>
+            </>
+          )}
 
-                return (
-                  <div key={t._id} className="agenda-item">
-                    <div className="agenda-fecha">{fechaFormateada}</div>
+          {/* ESTE MES */}
+          {turnosMes.length > 0 && (
+            <>
+              <h5 className="agenda-grupo">Este mes</h5>
+              <div className="agenda-container">
+                {turnosMes.map((t) => renderTurno(t))}
+              </div>
+            </>
+          )}
 
-                    <div className="agenda-info">
-                      <div className="agenda-header">
-                        <span className="agenda-servicio">
-                          {t.servicio?.name || "Servicio"}
-                        </span>
-                        <span className="agenda-hora">{t.hora}:00 hs</span>
-                      </div>
+          {/* MÁS ADELANTE */}
+          {turnosFuturo.length > 0 && (
+            <>
+              <h5 className="agenda-grupo">Más adelante</h5>
+              <div className="agenda-container">
+                {turnosFuturo.map((t) => renderTurno(t))}
+              </div>
+            </>
+          )}
 
-                      <div className="agenda-body">
-                        👩‍⚕️ {t.profesional?.nombres} {t.profesional?.apellidos}
-                      </div>
-                    </div>
-
-                    <div className="agenda-acciones">
-                      {puedeCancelar(t.fecha, t.hora) ? (
-                        <button
-                          className="btn btn-sm btn-outline-danger"
-                          onClick={() => cancelarTurno(t._id)}
-                        >
-                          Cancelar
-                        </button>
-                      ) : (
-                        <small className="text-muted">
-                          No se puede cancelar (menos de 24hs)
-                        </small>
-                      )}
-                    </div>
-                  </div>
-                );
-              })
-            )}
-          </div>
+{/* SIN TURNOS */}
+{turnosHoy.length === 0 &&
+ turnosSemana.length === 0 &&
+ turnosMes.length === 0 &&
+ turnosFuturo.length === 0 && (
+  <p className="empty-text">No tenés turnos próximos</p>
+)}
 
           {/* HISTORIAL (COLAPSABLE) */}
           <div style={{ marginTop: "30px" }}>
@@ -294,7 +369,7 @@ const Turnos = () => {
                 {turnosPasados.length === 0 ? (
                   <p className="empty-text">Sin historial</p>
                 ) : (
-                  turnosPasados.map((t) => {
+                  (verMasHistorial ? turnosPasados : turnosPasados.slice(0, 5)).map((t) => {
                     const fechaFormateada = new Date(t.fecha).toLocaleDateString("es-AR", {
                       day: "numeric",
                       month: "long",
@@ -303,8 +378,8 @@ const Turnos = () => {
 
                     return (
                       <div key={t._id} className="agenda-item" style={{ opacity: 0.6 }}>
-                        <div className="agenda-fecha">{fechaFormateada}</div>
-
+                        <div className="agenda-fecha">
+                          {fechaFormateada}</div>
                         <div className="agenda-info">
                           <div className="agenda-header">
                             <span>{t.servicio?.name}</span>
@@ -323,7 +398,18 @@ const Turnos = () => {
                     );
                   })
                 )}
-              </div>
+                {turnosPasados.length > 5 && (
+                <div style={{ textAlign: "center", marginTop: "10px" }}>
+                  <button
+                    className="btn btn-outline-light btn-sm"
+                    onClick={() => setVerMasHistorial(!verMasHistorial)}
+                  >
+                    {verMasHistorial ? "Ver menos ▲" : "Ver más ▼"}
+                  </button>
+                </div>
+              )}
+
+            </div>
             )}
           </div>
 
