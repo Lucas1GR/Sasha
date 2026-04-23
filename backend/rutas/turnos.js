@@ -150,6 +150,19 @@ router.post("/", autenticarToken, async (req, res) => {
 
     const fechaObj = new Date(fecha);
 
+    //  VALIDAR FECHA PASADA
+    const hoy = new Date();
+    hoy.setHours(0, 0, 0, 0);
+
+    const fechaSeleccionada = new Date(fechaObj);
+    fechaSeleccionada.setHours(0, 0, 0, 0);
+
+    if (fechaSeleccionada < hoy) {
+      return res.status(400).json({
+        mensaje: "No se pueden reservar fechas pasadas",
+      });
+    }
+
     const fechaGuardar = new Date(
       Date.UTC(
         fechaObj.getUTCFullYear(),
