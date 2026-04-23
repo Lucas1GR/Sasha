@@ -72,33 +72,127 @@ td {
   cursor: pointer;
 }
 
-/* Modal sencillo */
+/* 🔥 OVERLAY */
 .modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px); /* efecto pro */
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 2000;
+  padding: 20px;
 }
+/* 💎 MODAL */
 .modal-sasha {
   background: white;
-  padding: 40px;
-  border-radius: 25px;
-  width: 90%;
+  padding: 30px;
+  border-radius: 20px;
+  width: 100%;
   max-width: 500px;
+
+  max-height: 90vh;           /* 🔥 evita que se corte */
+  overflow-y: auto;           /* 🔥 scroll interno */
+
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
   position: relative;
+
+  animation: fadeInScale 0.3s ease;
 }
+
+/* animación */
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ❌ botón cerrar */
 .btn-cerrar {
   position: absolute;
   top: 15px;
-  right: 20px;
+  right: 18px;
   border: none;
-  background: none;
-  font-size: 1.2rem;
+  background: #fce4ec;
+  color: #ad1457;
+  font-weight: bold;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
   cursor: pointer;
+  transition: 0.2s;
+}
+
+.btn-cerrar:hover {
+  transform: rotate(90deg);
+  background: #ad1457;
+  color: white;
+}
+/* contenedor botones */
+.acciones-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* toggle activo/inactivo */
+.btn-toggle {
+  border: none;
+  border-radius: 20px;
+  padding: 5px 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+/* estado activo */
+.btn-toggle.activo {
+  background: #4caf50;
+  color: white;
+}
+
+/* estado inactivo */
+.btn-toggle.inactivo {
+  background: #ccc;
+  color: #444;
+}
+
+/* editar */
+.btn-edit {
+  background: #d4a373;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.btn-edit:hover {
+  transform: scale(1.1);
+}
+
+/* eliminar */
+.btn-delete {
+  background: #ff5252;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.btn-delete:hover {
+  transform: scale(1.1);
 }
