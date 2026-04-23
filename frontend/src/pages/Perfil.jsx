@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Form, Button, Card } from "react-bootstrap";
 import api from "../api/axios";
 import Swal from "sweetalert2";
+import "./Perfil.css";
 
 const Perfil = () => {
   const [formData, setFormData] = useState({
@@ -49,6 +50,7 @@ const Perfil = () => {
   // 🟢 CAMBIAR PASSWORD
   const cambiarPass = async () => {
     try {
+      console.log(passwords);
       await api.put("/usuarios/cambiar-password", passwords);
 
       Swal.fire("Contraseña actualizada", "", "success");
@@ -58,111 +60,94 @@ const Perfil = () => {
         passwordNueva: "",
       });
     } catch (err) {
-      Swal.fire(
-        "Error",
-        err.response?.data?.message || "Error",
-        "error"
-      );
+      Swal.fire("Error", err.response?.data?.message || "Error", "error");
     }
   };
 
-    return (
-    <div className="container mt-5" style={{ maxWidth: "600px" }}>
-        <div className="card shadow-sm p-4">
+  return (
+    <div className="perfil-container">
+      <div className="perfil-card">
+        <h3 className="perfil-title">Mi Perfil</h3>
 
-        <h3 className="mb-4 text-center" style={{ color: "#ad1457" }}>
-            Mi Perfil
-        </h3>
-
-        {/* 🔹 DATOS PERSONALES */}
-        <h5 className="mb-3">Datos personales</h5>
+        <h5 className="perfil-section">Datos personales</h5>
 
         <div className="mb-3">
-            <label>Email</label>
-            <input
-            className="form-control"
+          <label>Email</label>
+          <input
+            className="form-control perfil-input"
             value={formData.email}
             onChange={(e) =>
-                setFormData({ ...formData, email: e.target.value })
+              setFormData({ ...formData, email: e.target.value })
             }
-            />
+          />
         </div>
 
         <div className="mb-3">
-            <label>Teléfono</label>
-            <input
-            className="form-control"
+          <label>Teléfono</label>
+          <input
+            className="form-control perfil-input"
             value={formData.telefono}
             onChange={(e) =>
-                setFormData({ ...formData, telefono: e.target.value })
+              setFormData({ ...formData, telefono: e.target.value })
             }
-            />
+          />
         </div>
 
         <div className="mb-3">
-            <label>Dirección</label>
-            <input
-            className="form-control"
+          <label>Dirección</label>
+          <input
+            className="form-control perfil-input"
             value={formData.direccion}
             onChange={(e) =>
-                setFormData({ ...formData, direccion: e.target.value })
+              setFormData({ ...formData, direccion: e.target.value })
             }
-            />
+          />
         </div>
 
-        <button
-            className="btn w-100 mb-4"
-            style={{ backgroundColor: "#ad1457", color: "white" }}
-            onClick={guardarPerfil}
-        >
-            Guardar cambios
+        <button className="perfil-btn mb-3" onClick={guardarPerfil}>
+          Guardar cambios
         </button>
 
-        <hr />
+        <div className="perfil-divider"></div>
 
-        {/* 🔹 CAMBIAR PASSWORD */}
-        <h5 className="mb-3 mt-3">Seguridad</h5>
+        <h5 className="perfil-section">Seguridad</h5>
 
         <div className="mb-3">
-            <label>Contraseña actual</label>
-            <input
+          <label>Contraseña actual</label>
+          <input
             type="password"
-            className="form-control"
+            className="form-control perfil-input"
             value={passwords.passwordActual}
             onChange={(e) =>
-                setPasswords({
+              setPasswords({
                 ...passwords,
                 passwordActual: e.target.value,
-                })
+              })
             }
-            />
+          />
         </div>
 
         <div className="mb-3">
-            <label>Nueva contraseña</label>
-            <input
+          <label>Nueva contraseña</label>
+          <input
             type="password"
-            className="form-control"
-            value={passwords.nuevaPassword}
+            className="form-control perfil-input"
+            value={passwords.passwordNueva}
             onChange={(e) =>
-                setPasswords({
+              setPasswords({
                 ...passwords,
-                nuevaPassword: e.target.value,
-                })
+                passwordNueva: e.target.value,
+              })
             }
-            />
+          />
         </div>
 
-        <button
-            className="btn w-100"
-            style={{ backgroundColor: "#ad1457", color: "white" }}
-            onClick={cambiarPass}
-        >
-            Cambiar contraseña
+        <button className="perfil-btn" onClick={cambiarPass}>
+          Cambiar contraseña
         </button>
-        </div>
+      </div>
     </div>
-    );
+  );
 };
 
 export default Perfil;

@@ -1,0 +1,67 @@
+.perfil-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 50px;
+}
+
+.perfil-card {
+  width: 100%;
+  max-width: 600px;
+  border: none;
+  border-radius: 20px;
+  padding: 30px;
+  background: linear-gradient(145deg, #ffffff, #fff0f5);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.perfil-card:hover {
+  transform: translateY(-5px);
+}
+
+.perfil-title {
+  text-align: center;
+  color: #ad1457;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.perfil-section {
+  margin-top: 20px;
+  margin-bottom: 10px;
+  font-weight: 600;
+  color: #444;
+}
+
+.perfil-input {
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  padding: 10px;
+  transition: all 0.2s ease;
+}
+
+.perfil-input:focus {
+  border-color: #ad1457;
+  box-shadow: 0 0 0 2px rgba(173, 20, 87, 0.2);
+}
+
+.perfil-btn {
+  width: 100%;
+  border-radius: 12px;
+  padding: 10px;
+  font-weight: 600;
+  background: linear-gradient(135deg, #ad1457, #d81b60);
+  border: none;
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.perfil-btn:hover {
+  background: linear-gradient(135deg, #880e4f, #c2185b);
+  transform: scale(1.02);
+}
+
+.perfil-divider {
+  margin: 25px 0;
+  border-top: 1px solid #eee;
+}
