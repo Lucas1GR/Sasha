@@ -99,10 +99,10 @@ router.get("/disponibles", async (req, res) => {
     for (const hora of horarios) {
       const turnosEnHora = turnosDelDia.filter((t) => t.hora === hora);
 
-      const hayBloqueo = turnosEnHora.some((t) => t.bloqueado);
+      const bloqueados = turnosEnHora.filter((t) => t.bloqueado);
 
-      if (hayBloqueo) {
-        continue; // no mostrar ese horario
+      if (bloqueados.length === totalProfesionales) {
+        continue; // recién ahí bloqueás todo
       }
 
       if (turnosEnHora.length < totalProfesionales) {
