@@ -94,18 +94,18 @@ const Turnos = () => {
         const res = await api.get(`/turnos/disponibles?fecha=${value}`);
 
         if (!res.data || res.data.length === 0) {
-  setIsModalOpen(false); // 👈 CERRÁS EL MODAL
+          setIsModalOpen(false); // 👈 CERRÁS EL MODAL
 
-  Swal.fire({
-    title: "Día no disponible",
-    text: "Este día está cerrado o sin turnos 💔",
-    icon: "warning",
-    confirmButtonColor: "#ad1457",
-  });
-
-  setForm((prev) => ({ ...prev, fecha: "", hora: "" }));
-  setHorasDisponibles([]);
-  return;
+          Swal.fire({
+            title: "Día no disponible",
+            text: "Este día está cerrado o sin turnos 💔",
+            icon: "warning",
+            confirmButtonColor: "#ad1457",
+          });
+          
+          setForm((prev) => ({ ...prev, fecha: "", hora: "" }));
+          setHorasDisponibles([]);
+          return;
 }
 
         setHorasDisponibles(res.data);
@@ -445,6 +445,7 @@ const Turnos = () => {
                 className="modal-input"
                 value={form.fecha}
                 onChange={handleChange}
+                min={new Date().toISOString().split("T")[0]}
               />
             </div>
 

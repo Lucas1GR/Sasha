@@ -9,41 +9,42 @@ import { useAuth } from "../context/AuthContext";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const [mostrarPassword, setMostrarPassword] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (loading) return;
+    setLoading(true);
+
     try {
-      // Petición al backend
       const res = await api.post("/login", { email, password });
 
-      
+      login(res.data.usuario, res.data.token);
 
-      await Swal.fire({
+      Swal.fire({
         title: "¡Bienvenida!",
         text: "Inicio de sesión exitoso",
         icon: "success",
         timer: 2000,
         showConfirmButton: false,
       });
-    login(res.data.usuario, res.data.token);
 
-      // Redirigir según el rol
       const userRole = res.data.usuario.rol;
       if (userRole === "admin" || userRole === "profesional") {
         navigate("/admin");
       } else {
         navigate("/");
       }
+
     } catch (err) {
-      console.error("Error en login:", err);
-      Swal.fire({
-        title: "Error",
-        text: err.response?.data?.msg || "Credenciales incorrectas",
-        icon: "error",
-      });
+      console.error(err);
+      Swal.fire("Error", "Credenciales incorrectas", "error");
+    } finally {
+      setLoading(false);
     }
   };
 
