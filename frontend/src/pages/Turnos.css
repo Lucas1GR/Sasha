@@ -49,7 +49,6 @@
   transform: translateY(-2px);
 }
 
-
 /* vacío */
 .empty-text {
   color: white;
@@ -84,11 +83,11 @@
   align-items: center;
   justify-content: space-between;
   background: white;
-  padding: 18px 22px; 
+  padding: 18px 22px;
   border-radius: 15px;
   transition: 0.2s;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
-  gap: 15px; 
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  gap: 15px;
 }
 
 .agenda-item:hover {
@@ -129,7 +128,7 @@
 .agenda-header {
   display: flex;
   justify-content: space-between;
-  align-items: center; 
+  align-items: center;
   font-weight: 600;
   margin-bottom: 4px;
 }
@@ -148,11 +147,22 @@
 
 .agenda-body {
   font-size: 0.85rem;
-  color: #777; 
+  color: #777;
   margin-top: 3px;
 }
 
 .agenda-acciones {
   min-width: 120px;
   text-align: right;
+}
+.agenda-grupo {
+  color: white;
+
+  font-family: "Poppins", sans-serif;
+  font-weight: 600;
+
+  font-size: 1rem;
+  letter-spacing: 0.5px;
+
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
 }

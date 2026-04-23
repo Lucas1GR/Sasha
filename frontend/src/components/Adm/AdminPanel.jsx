@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from "react";
 // 1. Corregimos la ruta: subimos dos niveles (../../) para encontrar services
-import { getProducts, deleteProduct, updateProduct } from "../../services/products";
+import {
+  getProducts,
+  deleteProduct,
+  updateProduct,
+} from "../../services/products";
 import FormularioProducto from "./FormularioProducto";
 import Swal from "sweetalert2";
 import "./AdminPanel.css";
@@ -24,18 +28,18 @@ const AdminPanel = () => {
     }
   };
   const toggleActivo = async (servicio) => {
-      try {
-        await updateProduct(servicio._id, {
-          ...servicio,
-          active: !servicio.active,
-        });
+    try {
+      await updateProduct(servicio._id, {
+        ...servicio,
+        active: !servicio.active,
+      });
 
-        cargarServicios();
-      } catch (err) {
-        console.error("Error cambiando estado:", err);
-        Swal.fire("Error", "No se pudo cambiar el estado", "error");
-      }
-    };
+      cargarServicios();
+    } catch (err) {
+      console.error("Error cambiando estado:", err);
+      Swal.fire("Error", "No se pudo cambiar el estado", "error");
+    }
+  };
 
   const handleEliminar = async (id) => {
     const confirmacion = await Swal.fire({
@@ -130,36 +134,46 @@ const AdminPanel = () => {
                   <td>{s.category}</td>
                   <td>${s.price}</td>
                   <td>{s.duration} min</td>
-                  <td>{s.active ? (
-                    <span style={{ color: "green", fontWeight: "bold" }}>Activo</span>
-                  ) : (
-                      <span style={{ color: "red", fontWeight: "bold" }}>Inactivo</span>
+                  <td>
+                    {s.active ? (
+                      <span style={{ color: "green", fontWeight: "bold" }}>
+                        Activo
+                      </span>
+                    ) : (
+                      <span style={{ color: "red", fontWeight: "bold" }}>
+                        Inactivo
+                      </span>
                     )}
                   </td>
                   <td>
-                    <button
-                      className="btn-edit"
-                      onClick={() => {
-                        setServicioAEditar(s);
-                        setMostrarForm(true);
-                      }}
-                    >
-                      Editar
-                    </button>
+                    <div className="acciones-container">
+                      {/* Toggle activo */}
+                      <button
+                        className={`btn-toggle ${s.active ? "activo" : "inactivo"}`}
+                        onClick={() => toggleActivo(s)}
+                      >
+                        {s.active ? "Activo" : "Inactivo"}
+                      </button>
 
-                    <button
-                      onClick={() => toggleActivo(s)}
-                      style={{ marginLeft: "5px" }}
-                    >
-                      {s.active ? "Desactivar" : "Activar"}
-                    </button>
+                      {/* Editar */}
+                      <button
+                        className="btn-edit"
+                        onClick={() => {
+                          setServicioAEditar(s);
+                          setMostrarForm(true);
+                        }}
+                      >
+                        ✏️
+                      </button>
 
-                    <button
-                      className="btn-delete"
-                      onClick={() => handleEliminar(s._id)}
-                    >
-                      Eliminar
-                    </button>
+                      {/* Eliminar */}
+                      <button
+                        className="btn-delete"
+                        onClick={() => handleEliminar(s._id)}
+                      >
+                        🗑
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))
