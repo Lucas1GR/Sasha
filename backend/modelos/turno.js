@@ -12,7 +12,11 @@ const turnoSchema = new Schema(
     cliente: { type: Schema.Types.ObjectId, ref: "Usuario", default: null },
 
     // PROFESIONAL QUE ATIENDE EL TURNO
-    profesional: { type: Schema.Types.ObjectId, ref: "Usuario", required: true },
+    profesional: {
+      type: Schema.Types.ObjectId,
+      ref: "Usuario",
+      required: true,
+    },
 
     nombreClienteManual: { type: String, default: null },
 
@@ -30,6 +34,6 @@ const turnoSchema = new Schema(
 // ahora el turno único es por profesional
 turnoSchema.index(
   { fecha: 1, hora: 1, profesional: 1 },
-  { unique: true, partialFilterExpression: { estado: { $ne: "cancelado" } } }
+  { unique: true, partialFilterExpression: { estado: { $ne: "cancelado" } } },
 );
 module.exports = mongoose.model("Turno", turnoSchema, "turnos");
